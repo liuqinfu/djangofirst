@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 使用bootstrap动画必须引入，动画依赖jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {% load static %}
+    <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+    <!-- 第三方弹窗 -->
+{#    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>#}
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <form action="" method="post">
+                <p>姓名:<input type="text" name="uname" class="form-control" value="{{ edit_obj.uname }}"></p>
+                <p>性别:<input type="text" name="sex" class="form-control" value="{{ edit_obj.sex }}"></p>
+                <p>年龄:<input type="text" name="age" class="form-control" value="{{ edit_obj.age }}"></p>
+                <p>密码:<input type="text" name="password" class="form-control" value="{{ edit_obj.password }}"></p>
+                <p><input type="submit" class="form-control btn btn-info btn-primary"></p>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
