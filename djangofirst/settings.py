@@ -139,4 +139,4 @@ STATICFILES_DIRS = [
 ]
 
 # 默认是True   请求匹配不到会在url后面加/然后重定向
-APPEND_SLASH = True
+# APPEND_SLASH = True

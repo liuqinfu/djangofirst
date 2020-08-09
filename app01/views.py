@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse,redirect
+from django.shortcuts import render, HttpResponse, redirect,reverse
 
 # Create your views here.
 from app01.models import User
@@ -53,7 +53,32 @@ def edit(request):
         return redirect('/show')
     return render(request, 'first/edit.html', locals())
 
+
 def delete(request):
     userId = request.GET.get('id')
     User.objects.filter(id=userId).delete()
     return redirect('/show')
+
+
+def home(request):
+    return HttpResponse('home页面')
+
+
+def pathParam(request, param1, param2):
+    print(param1, param2)
+    return HttpResponse('无名分组：路径索引参数')
+
+
+def kwargs(request, year, month):
+    print(year, month)
+    return HttpResponse('有名分组：关键字参数')
+
+
+def 反向解析(request):
+    # 后端反向解析
+    reverse('ooo')
+    return render(request, '反向解析.html')
+
+
+def func(request):
+    return HttpResponse('func')
