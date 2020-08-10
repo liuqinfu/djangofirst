@@ -20,6 +20,7 @@ def login(request):
 
 
 def reg(request):
+    print(reverse('app01:ooo'))
     if request.method == 'POST':
         uname = request.POST.get('uname')
         password = request.POST.get('password')
@@ -76,7 +77,7 @@ def kwargs(request, year, month):
 
 def 反向解析(request):
     # 后端反向解析
-    reverse('ooo')
+    print(reverse('ooo'))
     return render(request, 'app01/反向解析.html')
 
 

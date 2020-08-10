@@ -41,5 +41,6 @@ urlpatterns = [
     #方式1
     # path('app01/',include(urls)),
     #方式2
-    path('app01/',include('app01.urls')),
+    path('app01/',include(('app01.urls','app01'),namespace='app01')),
+    path('app02/',include(('app02.urls','app02'),namespace='app02')),
 ]

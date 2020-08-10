@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app01.apps.App01Config',
+    'app02.apps.App02Config',
     'bookmanage.apps.BookmanageConfig',
 ]
 
@@ -90,7 +91,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': 3306,
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'root',
         'NAME': 'django',
         'CHARSET': 'UTF8'
     }
@@ -135,9 +136,9 @@ USE_TZ = True
 
 # STATIC_URL = '/static/'
 STATIC_URL = '/xxx/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,'static')
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR,'static')
+# ]
 STATICFILES_DIRS = [
     BASE_DIR.joinpath('static'),
 ]
