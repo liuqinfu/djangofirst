@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, redirect,reverse
+from django.shortcuts import render,HttpResponse,redirect,reverse
 
 # Create your views here.
 from app01.models import User
@@ -16,7 +16,7 @@ def login(request):
                 return HttpResponse('密码错误')
         else:
             return HttpResponse('用户名不存在')
-    return render(request, 'first/login.html')
+    return render(request, 'app01/login.html')
 
 
 def reg(request):
@@ -25,13 +25,13 @@ def reg(request):
         password = request.POST.get('password')
         User.objects.create(uname=uname, password=password)
         return HttpResponse('恭喜，注册成功')
-    return render(request, 'first/reg.html')
+    return render(request, 'app01/reg.html')
 
 
 def show(request):
     allUser = User.objects.all()
     # return render(request, 'show.html', {'allUser': allUser})
-    return render(request, 'first/show.html', locals())
+    return render(request, 'app01/show.html', locals())
 
 
 def edit(request):
@@ -51,7 +51,7 @@ def edit(request):
         edit_obj.password = password
         edit_obj.save()
         return redirect('/show')
-    return render(request, 'first/edit.html', locals())
+    return render(request, 'app01/edit.html', locals())
 
 
 def delete(request):
@@ -77,7 +77,7 @@ def kwargs(request, year, month):
 def 反向解析(request):
     # 后端反向解析
     reverse('ooo')
-    return render(request, '反向解析.html')
+    return render(request, 'app01/反向解析.html')
 
 
 def func(request):

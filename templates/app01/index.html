@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>综合页面</title>
+    {% load static %}
+    <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <form action="" method="post">
+                用户名：<input  class="form-control" type="text" name="uname">
+                密码：<input class="form-control" type="password" name="password">
+                hobby <input type="checkbox" name="hobby" value="java">java <input type="checkbox" name="hobby" value="c#">c#
+                <input class="form-control btn btn-block btn-success" type="submit" value="登陆">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
