@@ -23,14 +23,23 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('login/', login),
     # path('reg/', reg),
+
     # # 无名分组
     # # re_path('show/(\d+)/(\d+)$', pathParam),
     # # 有名分组
     # re_path('show/(?P<year>\d+)/(?P<month>\d+)$',kwargs),
+
     # path('show/', show),
     # path('edit/', edit),
     # path('delete/', delete),
+
+    #反向解析
     # path('反向解析',反向解析),
     # path('func_kks/',func,name='ooo')
-    path('app01/',include(urls,namespace=''))
+
+    # 分发
+    #方式1
+    # path('app01/',include(urls)),
+    #方式2
+    path('app01/',include('app01.urls')),
 ]
