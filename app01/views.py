@@ -1,5 +1,6 @@
 from django.shortcuts import render,HttpResponse,redirect,reverse
-
+from django.http import JsonResponse
+import json
 # Create your views here.
 from app01.models import User
 
@@ -83,3 +84,18 @@ def 反向解析(request):
 
 def func(request):
     return HttpResponse('func')
+
+def json(request):
+    dicts ={'name':'李章博',"sex":'男'}
+    return JsonResponse(dicts,json_dumps_params = {'ensure_ascii':False})
+
+def upload(request):
+    if request.method == 'GET':
+        return render(request,'app01/upload.html')
+    name = request.POST.get('name')
+    file_obj = request.FILES.getlist('file')
+    print(file_obj,type(file_obj))
+    with open(file_obj.name,'wb') as f:
+        for line in file_obj:
+            f.write(line)
+    return HttpResponse('上传成功')
