@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 使用bootstrap动画必须引入，动画依赖jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- 第三方图标库 -->
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 第三方弹窗 -->
+    <!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
+</head>
+<body>
+<h1 class="h1">
+    欢迎测试标签、过滤器、自定义标签
+</h1>
+整型：{{ i }}<br>
+浮点型：{{ f }}<br>
+字符串：{{ s }}<br>
+集合：{{ set }}<br>
+{% for foo in set %}
+    {{ foo }}
+{% endfor %}<br>
+字典：{{ dic }}<br>
+{{ dic.name }}<br>
+列表：{{ lis }}<br>
+{% for foo in lis %}
+    {{ foo }}
+{% endfor %}<br>{{ lis.1 }}
+
+
+
+
+</body>
+</html>

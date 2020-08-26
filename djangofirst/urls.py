@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, re_path,include
 # from app01.views import *
 from app01 import urls
+import tag.urls as tagurls
 
 urlpatterns = [
     # re_path('^$', home),
@@ -43,4 +44,6 @@ urlpatterns = [
     #方式2
     path('app01/',include(('app01.urls','app01'),namespace='app01')),
     path('app02/',include(('app02.urls','app02'),namespace='app02')),
+
+    path('tag/',include((tagurls,'tag'),namespace='mytag')),
 ]

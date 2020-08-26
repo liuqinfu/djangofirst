@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'app01.apps.App01Config',
     'app02.apps.App02Config',
     'bookmanage.apps.BookmanageConfig',
+    'tag.apps.TagConfig',
 ]
 
 MIDDLEWARE = [
@@ -91,7 +92,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': 3306,
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'root',
         'NAME': 'django',
         'CHARSET': 'UTF8'
     }
