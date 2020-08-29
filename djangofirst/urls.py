@@ -44,6 +44,7 @@ urlpatterns = [
     #方式2
     path('app01/',include(('app01.urls','app01'),namespace='app01')),
     path('app02/',include(('app02.urls','app02'),namespace='app02')),
+    path('book/',include(('bookmanage.urls','bookmanage'),namespace='book')),
 
     path('tag/',include((tagurls,'tag'),namespace='mytag')),
 ]

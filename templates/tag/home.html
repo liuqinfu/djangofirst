@@ -16,22 +16,49 @@
 <h1 class="h1">
     欢迎测试标签、过滤器、自定义标签
 </h1>
+<h2 class="h2">标签</h2>
 整型：{{ i }}<br>
 浮点型：{{ f }}<br>
 字符串：{{ s }}<br>
+布尔值：{{ bool }}<br>
 集合：{{ set }}<br>
 {% for foo in set %}
     {{ foo }}
 {% endfor %}<br>
 字典：{{ dic }}<br>
 {{ dic.name }}<br>
+起别名: {% with dic.hobbys as hobbys %}
+    {{ hobbys.0 }}
+    {{ hobbys.1 }}
+    {{ hobbys.2 }}
+{% endwith %}<br>
+
 列表：{{ lis }}<br>
 {% for foo in lis %}
     {{ foo }}
 {% endfor %}<br>{{ lis.1 }}
 
+<h2 class="h2">过滤器</h2>
+统计长度：{{ s|length }}<br>
+默认值：{{ bool|default:'啥也不是' }}<br>
+文件大小：{{ file_size|filesizeformat }}<br>
+日期格式化：{{ time|date:'Y-m-d H-i-s' }}<br>
+切片：{{ lis|slice:'0:7:2' }}<br>
+切取字符(包含三个点，三个点算一个字符)：{{ info|truncatechars:3 }}<br>
+切单词(长度不包含三个点，只按空格切；如果是中文，也是按空格切)：{{ words|truncatewords:5 }}<br>
+移除特定字符：{{ str|cut:' ' }}<br>
+拼接：{{ str|join:'你好' }}<br>
+加法运算：{{ i|add:3 }}<br>
+{#前端转义：{{ alert|safe }}<br>#}
+后端转义：{{ h1 }}<br>
 
+<h2 class="h2">自定义过滤器</h2>
+{% load myTag %}
+{{ i|baby:2 }}<br>
+标签多个参数空格隔开
+{% plus 'a' 123 123 123%}<br>
 
-
+<h2 class="h2">inclusion_tag</h2>
+{% myul %}
 </body>
 </html>
