@@ -146,3 +146,22 @@ STATICFILES_DIRS = [
 
 # 默认是True   请求匹配不到会在url后面加/然后重定向
 # APPEND_SLASH = True
+
+
+LOGGING={
+    'version':1,
+    'disable_existing_loggers':False,
+    'handlers':{
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+        }
+    },
+    'loggers':{
+        'django.db.backends':{
+            'handlers':['console'],
+            'propagate':True,
+            'level':'DEBUG'
+        }
+    }
+}
