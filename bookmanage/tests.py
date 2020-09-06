@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from django.db.models import Avg, Max, Min, Sum, Count
+from django.db.models import Avg, Max, Min, Sum, Count, Value
+from django.db.models.functions import Concat
 from django.test import TestCase
 
 # Create your tests here.
@@ -180,8 +181,23 @@ def main():
     # book = models.Book.objects.annotate(countAuthors=Count('authors')).filter(countAuthors__gt=1).values('name','countAuthors')
     # print(book)
     # 查询每个作者出的书的总价格
-    price = models.Author.objects.annotate(price_sum=Sum('book__price')).values('name', 'price_sum')
-    print(price)
+    # price = models.Author.objects.annotate(price_sum=Sum('book__price')).values('name', 'price_sum')
+    # print(price)
+
+    '''
+    F与Q查询
+    '''
+    """F查询 直接获取表中字段的数据"""
+    # 1 查询卖出数大于库存数的书籍
+    from django.db.models import F
+    # res = models.Book.objects.filter(maichu__gt=F('kucun'))
+    # print(res)
+    # 2 将所有书籍的价格提升50元
+    # update = models.Book.objects.update(price=F('price') + 50)
+    # print(update)
+    # 3 将所有书籍的名称后面加上'爆款'
+    update = models.Book.objects.update(name=Concat(F('name'), Value('爆款')))
+    print(update)
 
 
 if __name__ == '__main__':

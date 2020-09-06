@@ -11,6 +11,8 @@ class Book(models.Model):
     publish = models.ForeignKey(to='Publish', on_delete=models.CASCADE)
     authors = models.ManyToManyField(to='Author')
     publishTime = models.DateField(auto_now_add=True)
+    maichu = models.IntegerField(default=1000,verbose_name='卖出')
+    kucun = models.IntegerField(default=1000,verbose_name='库存')
 
     def __str__(self):
         return self.name
