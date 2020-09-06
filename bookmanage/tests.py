@@ -206,13 +206,21 @@ def main():
     # print(book)
 
     # Q的高阶用法 能够将查询条件的左边也变成字符串形式   例如：根据用户输入的key作为筛选条件的左边
-    q= Q()
-    q.connector = 'OR'
-    q.children.append(('maichu__gt',800))
-    q.children.append(('price__lt',150))
-    res = models.Book.objects.filter(q)
-    print(res)
+    # q= Q()
+    # q.connector = 'OR'
+    # q.children.append(('maichu__gt',800))
+    # q.children.append(('price__lt',150))
+    # res = models.Book.objects.filter(q)
+    # print(res)
 
+    '''
+    开启事务
+    '''
+    """  在一个with块中属于一个事务
+    from django.db import transaction
+    with transaction.Atomic:
+        pass
+    """
 
 if __name__ == '__main__':
     main()
