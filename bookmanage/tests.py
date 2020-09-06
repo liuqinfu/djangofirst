@@ -222,5 +222,49 @@ def main():
         pass
     """
 
+    '''
+    数据库查询优化
+    '''
+    """1 only与defer"""
+    # allbook = models.Book.objects.all()
+    # print(allbook) #这个时候才执行sql
+
+    # 获取书籍的名称
+    # 1 传统
+    # names = models.Book.objects.values('name')
+    # print(names)
+    # for name in names:
+    #     print(name.get('name'))
+
+    # 2 使用only  查询only之外的字段 需要单独走sql
+    # names = models.Book.objects.only('name')
+    # print(names)
+    # for name in names:
+    #     print(name.name) #only包含的字段  不需要再次走数据库
+    # #     print(name.price) #only之外的字段需要走数据库
+
+    # 3 defer
+    # names = models.Book.objects.defer('name')
+    # for name in names:
+    #     # print(name.name) # defer包含的字段 需要走数据库
+    #     print(name.price) # defer之外的字段  不需要再次走数据库
+
+    """select_related与prefetch_related"""
+    # select_related
+    # books = models.Book.objects.all()
+    # for book in books:
+    #     print(book.publish.name) # 每循环一次就要走一次数据库
+    # select_related会将book表和publish表连接起来 然后将所有查出来的大表数据封装给查询出来的对象
+    # books = models.Book.objects.select_related('publish') # 连表查询
+    # # print(books)
+    # for book in books:
+    #     print(book.publish.name)
+
+    books = models.Book.objects.prefetch_related('publish') # 子查询
+    # print(books)
+    for book in books:
+        print(book.publish.addr)
+
+
 if __name__ == '__main__':
     main()
