@@ -1,3 +1,4 @@
+import django
 from django.db import models
 
 
@@ -9,11 +10,18 @@ class Book(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='价格')
     publish = models.ForeignKey(to='Publish', on_delete=models.CASCADE)
     authors = models.ManyToManyField(to='Author')
+    publishTime = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Publish(models.Model):
     name = models.CharField(max_length=50, verbose_name='出版社名称')
     addr = models.CharField(max_length=20, verbose_name='所在地')
+
+    def __str__(self):
+        return '对象：%s' % self.name
 
 
 class Author(models.Model):
@@ -22,6 +30,8 @@ class Author(models.Model):
     detail = models.OneToOneField(to='Author_detail', on_delete=models.CASCADE)
 
 
+
 class Author_detail(models.Model):
     mobile = models.BigIntegerField(verbose_name='手机号')
     addr = models.CharField(max_length=50, verbose_name='住址')
+    email = models.EmailField(null=True)
