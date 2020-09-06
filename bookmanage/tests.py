@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.db.models import Avg, Max, Min, Sum, Count, Value
+from django.db.models import Avg, Max, Min, Sum, Count, Value, Q
 from django.db.models.functions import Concat
 from django.test import TestCase
 
@@ -196,8 +196,22 @@ def main():
     # update = models.Book.objects.update(price=F('price') + 50)
     # print(update)
     # 3 将所有书籍的名称后面加上'爆款'
-    update = models.Book.objects.update(name=Concat(F('name'), Value('爆款')))
-    print(update)
+    # update = models.Book.objects.update(name=Concat(F('name'), Value('爆款')))
+    # print(update)
+    """Q查询"""
+    # 1 查询卖出数大于800或价格小于150的书籍
+    # book = models.Book.objects.filter(Q(maichu__gt=800), Q(price__lt=150)) # Q包裹','分割还是and关系
+    # book = models.Book.objects.filter(Q(maichu__gt=800)| Q(price__lt=150)) # 或
+    # book = models.Book.objects.filter(Q(maichu__gt=800)| ~Q(price__lt=150)) # 非~
+    # print(book)
+
+    # Q的高阶用法 能够将查询条件的左边也变成字符串形式   例如：根据用户输入的key作为筛选条件的左边
+    q= Q()
+    q.connector = 'OR'
+    q.children.append(('maichu__gt',800))
+    q.children.append(('price__lt',150))
+    res = models.Book.objects.filter(q)
+    print(res)
 
 
 if __name__ == '__main__':
