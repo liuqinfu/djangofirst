@@ -79,9 +79,10 @@
                     简单模板继承
                 </a>
                 <a href="{% url 'book:extend2' %}" class="list-group-item">模板继承中包含模板</a>
-                <a href="#" class="list-group-item">Morbi leo risus</a>
-                <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-                <a href="#" class="list-group-item">Vestibulum at eros</a>
+                <a href="{% url 'book:books' %}" class="list-group-item">图书列表</a>
+                <a href="{% url 'book:publishs' %}" class="list-group-item">出版社列表</a>
+                <a href="{% url 'book:authors' %}" class="list-group-item">作者列表</a>
+                <a href="#" class="list-group-item">更多</a>
             </div>
         </div>
         <div class="col-md-8">
