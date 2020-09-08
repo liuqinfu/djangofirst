@@ -1,0 +1,24 @@
+{% extends 'book/index.html' %}
+
+{% block middle %}
+    <form action="./save" method="post">
+        <p>书名:<input class="form-control" type="text" name="name"></p>
+        <p>价格:<input class="form-control" type="text" name="price"></p>
+        <p>发布日期:<input class="form-control" type="date" name="publishTime"></p>
+        <p>出版社:
+            <select class="form-control" name="publish">
+                {% for publish in publishs %}
+                    <option value="{{ publish.pk }}">{{ publish.name }}</option>
+                {% endfor %}
+            </select>
+        <p>作者:
+            <select multiple class="form-control" name="authors">
+                {% for author in authors %}
+                    <option value="{{ author.pk }}">{{ author.name }}</option>
+                {% endfor %}
+
+            </select>
+        </p>
+        <p><input type="submit" class="btn btn-primary btn-block"></p>
+    </form>
+{% endblock %}
