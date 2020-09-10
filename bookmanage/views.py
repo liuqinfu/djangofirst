@@ -42,6 +42,29 @@ def editbook(request,bookId):
     authors = models.Author.objects.all()
     return render(request,'book/editbook.html',locals())
 
+def saveedit(request):
+    id = request.POST.get('id')
+    name = request.POST.get('name')
+    price = request.POST.get('price')
+    publishTime = request.POST.get('publishTime')
+    publish = request.POST.get('publish')
+    authors = request.POST.getlist('authors')
+    print(name,price,publish,publishTime,authors)
+    book = models.Book.objects.filter(pk=id).first()
+    book.name = name
+    book.price = price
+    book.publishTime = publishTime
+    book.publish.id = publish
+    book.authors.set(authors)
+    book.save()
+    bookListHtml = reverse('book:books')
+    return redirect(bookListHtml)
+
+def deletebook(request,book_id):
+    models.Book.objects.filter(pk=book_id).delete()
+    bookListHtml = reverse('book:books')
+    return redirect(bookListHtml)
+
 def publishList(request):
     publishs = models.Publish.objects.all()
     return render(request,'book/publishs.html',locals())

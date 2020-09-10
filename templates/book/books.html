@@ -26,8 +26,8 @@
                 <td class="success">{{ book.publish.name }}</td>
                 <td class="active">{{ book.publishTime|date:'Y-m-d' }}</td>
                 <td class="warning">
-                    <a href="{% url 'book:editbook' %}/{{ book.pk }}" type="button" class="btn btn-primary" >编辑</a>
-                    <a type="button" class="btn btn-danger">删除</a>
+                    <a href="{% url 'book:editbook' book.pk %}" type="button" class="btn btn-primary" >编辑</a>
+                    <a href="{% url 'book:deletebook' book.pk %}" type="button" class="btn btn-danger">删除</a>
                 </td>
             </tr>
         {% endfor %}
