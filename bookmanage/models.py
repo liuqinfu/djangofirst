@@ -26,9 +26,16 @@ class Publish(models.Model):
         return '对象：%s' % self.name
 
 
+gender_choices = [
+    (1,'男'),
+    (2,'女'),
+    (3,'未知')
+]
+
 class Author(models.Model):
     name = models.CharField(max_length=10)
     age = models.IntegerField()
+    gender = models.IntegerField(choices=gender_choices,null=True)
     detail = models.OneToOneField(to='Author_detail', on_delete=models.CASCADE)
 
 
