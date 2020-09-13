@@ -99,3 +99,13 @@ def upload(request):
         for line in file_obj:
             f.write(line)
     return HttpResponse('上传成功')
+
+def ajax(request):
+    if request.method == 'POST':
+        v1 = request.POST.get('val1')
+        v2 = request.POST.get('val2')
+        res = int(v1) + int(v2)
+        res = {'code':200,'data':res,'msg':'success'}
+        return JsonResponse(res)
+    else:
+        return render(request,'app01/ajax.html')

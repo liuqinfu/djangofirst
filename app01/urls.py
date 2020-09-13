@@ -5,5 +5,6 @@ urlpatterns = [
     path('reg/', reg),
     path('func_kks/',func,name='ooo'),
     path('json',json),
-    path('upload',upload)
+    path('upload',upload),
+    path('ajax',ajax,name='ajax')
 ]
