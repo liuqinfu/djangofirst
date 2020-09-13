@@ -260,10 +260,15 @@ def main():
     # for book in books:
     #     print(book.publish.name)
 
-    books = models.Book.objects.prefetch_related('publish') # 子查询
-    # print(books)
-    for book in books:
-        print(book.publish.addr)
+    # books = models.Book.objects.prefetch_related('publish') # 子查询
+    # # print(books)
+    # for book in books:
+    #     print(book.publish.addr)
+
+    # 字段值可以被穷举，定义字段时，使用choice
+    author_detail = models.Author_detail.objects.create(mobile='120', email='120@qq.com', addr='上海')
+    author = models.Author.objects.create(name='李四', age=26, gender=1,detail=author_detail)
+    print(author.get_gender_display())
 
 
 if __name__ == '__main__':
