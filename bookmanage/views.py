@@ -31,6 +31,7 @@ def saveNewbook(request):
     authors = request.POST.getlist('authors')
     print(name,price,publish,publishTime,authors)
     book = models.Book.objects.create(name=name,price=price,publishTime=publishTime,publish_id=publish)
+    models.Book.objects.bulk_create() #批量插入   节省插入时间
     book.authors.set(authors)
     book.save()
     bookListHtml = reverse('book:books')

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 使用bootstrap动画必须引入，动画依赖jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- 第三方图标库 -->
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 第三方弹窗 -->
+    <!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
+    <script>
+        $(function () {
+            $("#id1").click(function () {
+                {% comment %}利用ajax发送文件需要借助formdata对象{% endcomment %}
+                let formData = new FormData();
+                formData.append('name','张三')
+                formData.append('files',$('#file')[0].files[0])
+                $.ajax({
+                    url:"",
+                    type:'post',
+                    data:formData,
+                    contentType:false, {% comment %}不使用任何编码{% endcomment %}
+                    processData:false, {% comment %}告诉游览器对数据不做任何加工{% endcomment %}
+                    success:function (args) {
+                        console.log(args)
+                        $('#res').val(args.data)
+                    },
+                    error:function (error) {
+                        console.log(error)
+                    }
+                })
+            })
+        })
+    </script>
+</head>
+<body>
+<input type="file" class="form-control" id="file" name="myfile">
+<input type="button" class="btn btn-primary" id="id1">
+
+</body>
+</html>

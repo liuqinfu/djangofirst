@@ -109,3 +109,20 @@ def ajax(request):
         return JsonResponse(res)
     else:
         return render(request,'app01/ajax.html')
+
+def ajaxSendJsonData(request):
+    if request.is_ajax():
+        print(request.POST)
+        print(request.body)
+        import json
+        params = json.loads(request.body)
+        print(params)
+        return HttpResponse("success")
+    return render(request,'app01/ajax_send_jsonData.html')
+
+def ajaxSendFileData(request):
+    if request.is_ajax():
+        print(request.POST)
+        print(request.FILES)
+        return HttpResponse("success")
+    return render(request,'app01/ajax_send_fileData.html')
