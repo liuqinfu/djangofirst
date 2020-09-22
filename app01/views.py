@@ -99,3 +99,30 @@ def upload(request):
         for line in file_obj:
             f.write(line)
     return HttpResponse('上传成功')
+
+def ajax(request):
+    if request.method == 'POST':
+        v1 = request.POST.get('val1')
+        v2 = request.POST.get('val2')
+        res = int(v1) + int(v2)
+        res = {'code':200,'data':res,'msg':'success'}
+        return JsonResponse(res)
+    else:
+        return render(request,'app01/ajax.html')
+
+def ajaxSendJsonData(request):
+    if request.is_ajax():
+        print(request.POST)
+        print(request.body)
+        import json
+        params = json.loads(request.body)
+        print(params)
+        return HttpResponse("success")
+    return render(request,'app01/ajax_send_jsonData.html')
+
+def ajaxSendFileData(request):
+    if request.is_ajax():
+        print(request.POST)
+        print(request.FILES)
+        return HttpResponse("success")
+    return render(request,'app01/ajax_send_fileData.html')
