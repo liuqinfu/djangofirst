@@ -1,14 +1,21 @@
 from django.shortcuts import render,HttpResponse,redirect,reverse
 from django.http import JsonResponse
+from django import forms
 import json
 # Create your views here.
 from app01.models import User
 
+class MyForm(forms.Form):
+    uname = forms.CharField(min_length=3,max_length=8,label='用户名')
+    password = forms.CharField(min_length=3,max_length=8,label='密码')
+    email = forms.EmailField(min_length=3,max_length=10,label='邮箱')
 
 def login(request):
+    form_obj = MyForm()
     if request.method == 'POST':
         uname = request.POST.get('uname')
         password = request.POST.get('password')
+        email = request.POST.get('email')
         user = User.objects.filter(uname=uname).first()
         if user:
             if user.password == password:
@@ -17,7 +24,7 @@ def login(request):
                 return HttpResponse('密码错误')
         else:
             return HttpResponse('用户名不存在')
-    return render(request, 'app01/login.html')
+    return render(request, 'app01/login.html',locals())
 
 
 def reg(request):

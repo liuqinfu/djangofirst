@@ -17,11 +17,12 @@ from django.contrib import admin
 from django.urls import path, re_path,include
 
 import tag.urls as tagurls
+import app01.views as app01View
 
 urlpatterns = [
     # re_path('^$', home),
     path('admin/', admin.site.urls),
-    # path('login/', login),
+    path('login/', app01View.login),
     # path('reg/', reg),
 
     # # 无名分组
