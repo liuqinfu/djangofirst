@@ -1,6 +1,51 @@
 {% extends 'book/extend.html' %}
+{% block js %}
+    <script>
+        $(function () {
+            $(".delete").click(function () {
+                let bookId = this.id
+                swal("","删除后无法撤销，确认删除吗?","warning", {
+                    buttons: {
+                        cancel: "取消",
+                        catch: {
+                            text: "确认删除",
+                            value: "confirm",
+                        },
+                    },
+                }).then((value) => {
+                    switch (value) {
+                        case "confirm":
+                            console.log(bookId)
+                            $.ajax({
+                                url: '{{ deleteUrl }}',
+                                method: "post",
+                                data: {'bookId': bookId},
+                                dataType: 'json',
+                                success: function (res) {
+                                    console.log(res)
+                                    swal("已删除!", "数据删除成功!", "success");
+                                },
+                                error: function (err) {
+                                    swal("操作失败!", "数据删除失败!", "error");
+                                }
+                            })
+                            break;
+                        default:
+                            swal({
+                                {#title: "已取消",#}
+                                text: "已取消",
+                                icon: "info",
+                                button:false,
+                            });
+                    }
+                });
+            });
+        })
+    </script>
+{% endblock %}
 {% block pannel %}
-    <a class="btn btn-primary" type="button"  href="{% url 'book:addbook' %}">增加</a><hr>
+    <a class="btn btn-primary" type="button" href="{% url 'book:addbook' %}">增加</a>
+    <hr>
     <table class="table table-striped table-bordered table-condensed">
         <tr>
             <td class="active">序号</td>
@@ -26,12 +71,13 @@
                 <td class="success">{{ book.publish.name }}</td>
                 <td class="active">{{ book.publishTime|date:'Y-m-d' }}</td>
                 <td class="warning">
-                    <a href="{% url 'book:editbook' book.pk %}" type="button" class="btn btn-primary" >编辑</a>
-                    <a href="{% url 'book:deletebook' book.pk %}" type="button" class="btn btn-danger">删除</a>
+                    <a href="{% url 'book:editbook' book.pk %}" type="button" class="btn btn-primary">编辑</a>
+                    <a {% comment %}href="{% url 'book:deletebook' book.pk %}"{% endcomment %} id="{{ book.pk }}"
+                                                                                               type="button"
+                                                                                               class="btn btn-danger delete">删除</a>
                 </td>
             </tr>
         {% endfor %}
 
     </table>
-
 {% endblock %}

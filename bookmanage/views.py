@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -16,6 +17,7 @@ def extend2(request):
 
 def bookList(request):
     books = models.Book.objects.all()
+    deleteUrl = reverse('book:delete')
     return render(request,'book/books.html',locals())
 
 def addbook(request):
@@ -65,6 +67,13 @@ def deletebook(request,book_id):
     models.Book.objects.filter(pk=book_id).delete()
     bookListHtml = reverse('book:books')
     return redirect(bookListHtml)
+
+import json
+def delete(request):
+    bookId = request.POST.get('bookId')
+    # models.Book.objects.filter(pk = bookId).delete()
+    res = {'code':200,'msg':'success','data':bookId}
+    return JsonResponse(res)
 
 def publishList(request):
     publishs = models.Publish.objects.all()

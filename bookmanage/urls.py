@@ -11,6 +11,7 @@ urlpatterns = [
     re_path('books/edit/(\d+)', editbook, name='editbook'),
     path('books/edit/update',saveedit,name='saveedit'),
     re_path('books/edit/delete/(?P<book_id>\d+)',deletebook,name='deletebook'),
+    re_path('books/edit/delete',delete,name='delete'),
     path('publishs/', publishList, name='publishs'),
     path('authors/', authorList, name='authors'),
 
