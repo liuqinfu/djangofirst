@@ -5,46 +5,54 @@ import json
 # Create your views here.
 from app01.models import User
 
+
 class MyForm(forms.Form):
+    # error_messages：自定义错误提示
+    # label:字段名
+    # initial: 初始化值
+    # required: 是否必填
     uname = forms.CharField(min_length=3,max_length=8,label='用户名',error_messages={
         'min_length':'最小长度为3',
         'max_length':'最大长度为8',
         'required':'用户名不能为空'
-    })
+    },widget=forms.TextInput(attrs={'class':'form-control'}))
+
     password = forms.CharField(min_length=3,max_length=8,label='密码',error_messages={
         'min_length':'最小长度为3',
         'max_length':'最大长度为8',
         'required':'密码不能为空'
-    })
+    },widget=forms.PasswordInput(attrs={'class':'form-control'}))
+
     confirm = forms.CharField(min_length=3, max_length=8, label='确认密码', error_messages={
         'min_length': '最小长度为3',
         'max_length': '最大长度为8',
         'required': '密码不能为空'
-    })
+    },widget=forms.PasswordInput(attrs={'class':'form-control'}))
+
+    date = forms.DateField(widget=forms.DateInput(attrs={'class':'form-control datetime','type':'date'}),label='日期')
+
     email = forms.EmailField(min_length=3,max_length=10,label='邮箱',error_messages={
         'min_length':'最小长度为3',
         'max_length':'最大长度为10',
         'required':'邮箱不能为空',
         'invalid':'邮箱无效'
-    })
+    },widget=forms.EmailInput(attrs={'class':'form-control','type':'email'}))
 
     #钩子函数  钩子函数是在声明校验通过后的第二层自定义校验
-
     #局部钩子函数只作用在一个字段上面
     def clean_uname(self):
         uname_ = self.cleaned_data['uname']
         if '666' in uname_:
             self.errors['uname']=['光喊666是没有用的']
         return uname_
-
-    #全局钩子函数可以作用在多个字段
+    #
+    # #全局钩子函数可以作用在多个字段
     def clean(self):
-        password_ = self.cleaned_data['password']
-        confirm_ = self.cleaned_data['confirm']
+        password_ = self.cleaned_data.get('password')
+        confirm_ = self.cleaned_data.get('confirm')
         if not password_ == confirm_:
             self.errors['confirm']=['密码输入不一致']
         return self.cleaned_data
-
 
 def login(request):
     form_obj = MyForm()
