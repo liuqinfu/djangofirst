@@ -15,7 +15,10 @@ class MyForm(forms.Form):
         'min_length':'最小长度为3',
         'max_length':'最大长度为8',
         'required':'用户名不能为空'
-    },widget=forms.TextInput(attrs={'class':'form-control'}))
+    },widget=forms.TextInput(attrs={'class':'form-control'}),
+                            validators=[RegexValidator(r'^[1-9]+$','请输入数字'),
+                                        RegexValidator(r'^159[1-9]+$','数字必须以159开头')]
+                            )
 
     password = forms.CharField(min_length=3,max_length=8,label='密码',error_messages={
         'min_length':'最小长度为3',
