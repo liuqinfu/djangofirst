@@ -6,7 +6,7 @@
     {% load static %}
 
     <!-- 使用bootstrap动画必须引入，动画依赖jquery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
     <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
     <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
 
@@ -17,7 +17,7 @@
 
 <div class="container">
     <div class="col-md-8 col-md-offset-2">
-        <form action="" method="post">
+        <form action="" method="post" novalidate>
             {% comment %}用户名：<input type="text" name="uname" class="form-control">
             密码：<input type="password" name="password" class="form-control">{% endcomment %}
 
@@ -26,7 +26,7 @@
             <p>{{ form_obj.email.label }}:{{ form_obj.email }}</p>{% endcomment %}
 
             {% for form in form_obj %}
-                <p>{{ form.label }}:{{ form }}</p>
+                <p>{{ form.label }}:{{ form }}<span style="color: red">{{ form.errors.0 }}</span></p>
             {% endfor %}
 
 
