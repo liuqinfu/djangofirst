@@ -47,7 +47,7 @@ def login(request):
         password = request.POST.get('password')
         if uname == 'json' and password == '123456':
             target = request.GET.get('target')
-            response = redirect(target if target else 'index/')
+            response = redirect(target or 'index/')
             response.set_cookie('uname', uname + password,max_age=1800,expires=1800) #expires针对IE浏览器 超时时间设置为5s   max_age除了IE浏览器之外的超时时间设置为60s
             return response
     return render(request, 'book/login.html')
