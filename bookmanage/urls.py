@@ -16,4 +16,6 @@ urlpatterns = [
     path('publishs/', publishList, name='publishs'),
     path('authors/', authorList, name='authors'),
 
+    path('myview',MyView.as_view())
+
 ]

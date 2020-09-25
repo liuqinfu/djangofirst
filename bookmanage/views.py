@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views import View
 
 from bookmanage import models
 
@@ -18,6 +20,25 @@ def check_login(func):
             res = redirect('/book?target=%s' % request.get_full_path_info())
         return res
     return check
+
+# CBV模式实现url资源控制
+# CBV模式加装饰器的方式2 (可以给指定方法,并且可以指定多个方法)
+# @method_decorator(check_login,name='get')
+# @method_decorator(check_login,name='post')
+class MyView(View):
+
+    # CBV模式加装饰器的方式3  (原理是CBV底层执行了dispatch方法)
+    @method_decorator(check_login)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,*args,**kwargs)
+
+    # CBV模式加装饰器的方式1
+    # @method_decorator(check_login)
+    def get(self,request):
+        return HttpResponse("这是get请求")
+
+    def post(self,request):
+        return HttpResponse("这是post请求")
 
 
 def login(request):
@@ -109,10 +130,6 @@ def deletebook(request, book_id):
     models.Book.objects.filter(pk=book_id).delete()
     bookListHtml = reverse('book:books')
     return redirect(bookListHtml)
-
-
-import json
-
 
 @check_login
 def delete(request):
