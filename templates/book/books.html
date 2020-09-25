@@ -4,7 +4,7 @@
         $(function () {
             $(".delete").click(function () {
                 let bookId = this.id
-                swal("","删除后无法撤销，确认删除吗?","warning", {
+                swal("", "删除后无法撤销，确认删除吗?", "warning", {
                     buttons: {
                         cancel: "取消",
                         catch: {
@@ -23,7 +23,19 @@
                                 dataType: 'json',
                                 success: function (res) {
                                     console.log(res)
-                                    swal("已删除!", "数据删除成功!", "success");
+                                    swal("已删除!", "数据删除成功!", "success", {
+                                        buttons: {
+                                            catch: {
+                                                text: "OK",
+                                                value: "confirm",
+                                            },
+                                        },
+                                    }).then(value1 => {
+                                        switch (value1) {
+                                            case 'confirm':
+                                                location.reload() {% comment %}刷新数据{% endcomment %}
+                                        }
+                                    })
                                 },
                                 error: function (err) {
                                     swal("操作失败!", "数据删除失败!", "error");
@@ -35,7 +47,7 @@
                                 {#title: "已取消",#}
                                 text: "已取消",
                                 icon: "info",
-                                button:false,
+                                button: false,
                             });
                     }
                 });

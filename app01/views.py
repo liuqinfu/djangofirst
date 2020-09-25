@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from django.shortcuts import render,HttpResponse,redirect,reverse
 from django.http import JsonResponse
 from django import forms
@@ -34,6 +35,9 @@ class MyForm(forms.Form):
 
     date = forms.DateField(widget=forms.DateInput(attrs={'class':'form-control datetime','type':'date'}),label='日期')
 
+    gender = forms.ChoiceField(choices=((1,"男"),(2,"女"),(3,"其他")),label='性别',initial=3,widget=forms.RadioSelect(attrs={'class':'form-control'}))
+    # gender = forms.ChoiceField(choices=((1,"男"),(2,"女"),(3,"其他")),label='性别',initial=3,widget=forms.Select(attrs={'class':'form-control'}))
+
     email = forms.EmailField(min_length=3,max_length=10,label='邮箱',error_messages={
         'min_length':'最小长度为3',
         'max_length':'最大长度为10',
@@ -60,18 +64,20 @@ class MyForm(forms.Form):
 def login(request):
     form_obj = MyForm()
     if request.method == 'POST':
-        # uname = request.POST.get('uname')
-        # password = request.POST.get('password')
-        # email = request.POST.get('email')
-        # user = User.objects.filter(uname=uname).first()
-        # if user:
-        #     if user.password == password:
-        #         return HttpResponse('登录成功')
-        #     else:
-        #         return HttpResponse('密码错误')
-        # else:
-        #     return HttpResponse('用户名不存在')
         form_obj = MyForm(request.POST)
+        if form_obj.is_valid():
+            uname = request.POST.get('uname')
+            password = request.POST.get('password')
+            email = request.POST.get('email')
+            user = User.objects.filter(uname=uname).first()
+            if user:
+                if user.password == password:
+                    return HttpResponse('登录成功')
+                else:
+                    return HttpResponse('密码错误')
+            else:
+                return HttpResponse('用户名不存在')
+
     return render(request, 'app01/login.html',locals())
 
 
