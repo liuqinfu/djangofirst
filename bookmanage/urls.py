@@ -2,7 +2,8 @@ from django.urls import path, re_path, include
 from bookmanage.views import *
 
 urlpatterns = [
-    re_path('^$', index),
+    re_path('^$', login),
+    re_path('index/', index),
     path('extend/', extend, name='extend'),
     path('extend2/', extend2, name='extend2'),
     path('books/list/', bookList, name='books'),
