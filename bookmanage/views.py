@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from bookmanage import models
 
@@ -21,22 +22,35 @@ def check_login(func):
         return res
     return check
 
+
+# csrf_protect装饰的方法需要校验csrf
+# csrf_exempt装饰的方法忽略校验csrf
+
 # CBV模式实现url资源控制
 # CBV模式加装饰器的方式2 (可以给指定方法,并且可以指定多个方法)
 # @method_decorator(check_login,name='get')
 # @method_decorator(check_login,name='post')
+# @method_decorator(csrf_protect,name='post') 有效
+# @method_decorator(csrf_exempt,name='post') 无效
+# @method_decorator(csrf_exempt,name='dispatch') 有效
 class MyView(View):
 
     # CBV模式加装饰器的方式3  (原理是CBV底层执行了dispatch方法)
+    # @method_decorator(csrf_protect) 有效
+    # @method_decorator(csrf_exempt) 有效
     @method_decorator(check_login)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,*args,**kwargs)
 
     # CBV模式加装饰器的方式1
-    # @method_decorator(check_login)
+    # @method_decorator(csrf_protect) 有效
+    # @method_decorator(csrf_exempt) 无效
+    @method_decorator(check_login)
     def get(self,request):
         return HttpResponse("这是get请求")
 
+    # @method_decorator(csrf_protect) 有效
+    # @method_decorator(csrf_exempt) 无效
     def post(self,request):
         return HttpResponse("这是post请求")
 
