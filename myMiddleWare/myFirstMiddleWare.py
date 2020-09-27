@@ -12,8 +12,8 @@ class myFirstMiddleware(MiddlewareMixin):
 
     def process_response(self,request,response):
         print('我是第一个自定义的中间件中的process_response方法')
-        # return response
-        return HttpResponse('我是第一个自定义的中间件中的process_response方法返回的')
+        return response
+        # return HttpResponse('我是第一个自定义的中间件中的process_response方法返回的')
 
 class mySecondMiddleware(MiddlewareMixin):
 
