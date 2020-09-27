@@ -19,6 +19,8 @@
                             $.ajax({
                                 url: '{{ deleteUrl }}',
                                 method: "post",
+                                {% comment %}解决csrf方式二{% endcomment %}
+                               {% comment %} data: {'bookId': bookId,'csrfmiddlewaretoken':'{{csrf_token}}'},{% endcomment %}
                                 data: {'bookId': bookId},
                                 dataType: 'json',
                                 success: function (res) {

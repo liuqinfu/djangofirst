@@ -2,6 +2,7 @@
 
 {% block middle %}
     <form action="save/" method="post">
+        {% csrf_token %}
         <p>书名:<input class="form-control" type="text" name="name"></p>
         <p>价格:<input class="form-control" type="text" name="price"></p>
         <p>发布日期:<input class="form-control" type="date" name="publishTime"></p>

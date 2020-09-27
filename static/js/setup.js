@@ -1,4 +1,4 @@
-// 统一解决ajax的csrf跨站伪造中间件拦截问题
+// 统一解决ajax的csrf跨站伪造中间件拦截问题  解决csrf方式三
 
 function getCookie(name) {
     var cookieValue = null;

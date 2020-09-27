@@ -12,6 +12,7 @@
 <body>
 
 <form action="" method="post">
+    {% comment %}解决csrf方式一{% endcomment %}
     {% csrf_token %}
     <p>用户名：<input type="text" name="uname" class="form-control"></p>
     <p>密码：<input type="password" name="password" class="form-control"></p>
