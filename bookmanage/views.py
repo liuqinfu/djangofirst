@@ -1,3 +1,5 @@
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
@@ -59,15 +61,30 @@ def login(request):
     if request.method == 'POST':
         uname = request.POST.get('uname')
         password = request.POST.get('password')
-        if uname == 'json' and password == '123456':
-            target = request.GET.get('target')
-            response = redirect(target or 'index/')
-            response.set_cookie('uname', uname + password,max_age=1800,expires=1800) #expires针对IE浏览器 超时时间设置为5s   max_age除了IE浏览器之外的超时时间设置为60s
-            return response
+        # if uname == 'json' and password == '123456':
+        #     target = request.GET.get('target')
+        #     response = redirect(target or 'index/')
+        #     response.set_cookie('uname', uname + password,max_age=1800,expires=1800) #expires针对IE浏览器 超时时间设置为5s   max_age除了IE浏览器之外的超时时间设置为60s
+        #     return response
+        #基于auth实现登陆
+        #校验用户名密码是否正确   返回用户对象
+        authenticate = auth.authenticate(request, username=uname, password=password)
+        if authenticate:
+            # 用户登陆    底层创建了session
+            auth.login(request,authenticate)
+            return redirect('index/')
     return render(request, 'book/login.html')
 
-@check_login
+# @check_login
+# @login_required(login_url= '/book') #局部登陆页面配置，局部优先级高于全局登陆页面配置
+@login_required #当配置全局登陆页面时，这里可不配置，
 def index(request):
+    # 用户登出
+    auth.logout(request)
+    print(request.user)
+    #校验用户是否登陆
+    is_authenticated = request.user.is_authenticated
+    print(is_authenticated)
     import notify
     notify.sendAll()
     return render(request, 'book/index.html')
