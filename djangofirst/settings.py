@@ -150,6 +150,10 @@ STATICFILES_DIRS = [
 # APPEND_SLASH = True
 
 
+#全局登陆页面配置
+# LOGIN_URL= '/admin'
+
+
 LOGGING={
     'version':1,
     'disable_existing_loggers':False,
