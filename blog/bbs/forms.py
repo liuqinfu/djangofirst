@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 from bbs import models
 
 
-class RegisterForm(forms.Model):
+class RegisterForm(forms.Form):
     name = forms.CharField(min_length=3,
                            max_length=20,
                            required=True,
