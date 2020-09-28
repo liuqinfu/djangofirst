@@ -14,11 +14,46 @@
     <script src="{% static 'js/setup.js' %}"></script>
 </head>
 <body>
-<form action="" method="post">
-    {% for register in register_form %}
-        <p>{{ register.label }}:{{ register }}<span type="color: red">{{ register.errors.0 }}</span></p>
-    {% endfor %}
-    <input type="submit"class="form-control btn btn-primary" value="注册">
-</form>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1 class="text-center">注册</h1>
+            <form action="" method="post" novalidate>
+                {% for register in register_form %}
+                    <div class="form-group">
+                        <label for="">{{ register.label }}</label>
+                        {{ register }}
+                        <span type="color: red">{{ register.errors.0 }}</span>
+                    </div>
+                {% endfor %}
+                <div class="form-group">
+                    <label for="myAvatar">头像
+                        <img id="myAvatarImg" src="{% static 'img/default.jpg' %}" style="width: 100px;margin-left: 10px">
+                    </label>
+                    <input type="file" name="avatar" id="myAvatar" style="display: none">
+                </div>
+                <input type="submit" class="form-control btn btn-primary pull-right" value="注册">
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    //用户选择头像并展示
+    $('#myAvatar').change(function () {
+        //利用文件阅读器对象
+        //先生成一个文件阅读器对象
+        let fileReader = new FileReader();
+        //获取用户选择的头像
+        let file = $(this)[0].files[0];
+        //将文件交给文件阅读器对象读取
+        fileReader.readAsDataURL(file) //这是一个异步io操作
+        //需要等待异步操作执行完成
+        fileReader.onload = function(){
+            //利用文件阅读器将文件展示在页面上
+        $('#myAvatarImg').attr('src',fileReader.result)
+        }
+
+    })
+</script>
 </body>
 </html>
