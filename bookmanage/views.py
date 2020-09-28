@@ -68,6 +68,8 @@ def login(request):
 
 @check_login
 def index(request):
+    import notify
+    notify.sendAll()
     return render(request, 'book/index.html')
 
 
