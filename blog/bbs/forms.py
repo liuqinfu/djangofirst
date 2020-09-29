@@ -5,7 +5,7 @@ from bbs import models
 
 
 class RegisterForm(forms.Form):
-    name = forms.CharField(min_length=3,
+    username = forms.CharField(min_length=3,
                            max_length=20,
                            required=True,
                            label='用户名',
@@ -28,10 +28,11 @@ class RegisterForm(forms.Form):
                                },
                                validators=[RegexValidator(r'^[1-9A-Za-z]{8,}$', '密码必须数字母或数字组合，且8位以上')]
                                )
-    confirm = forms.CharField(min_length=3,
-                              max_length=20,
-                              required=True,
+    confirm = forms.CharField(required=True,
                               label='确认密码',
+                              error_messages={
+                                  'required': '密码必填'
+                              },
                               widget=forms.PasswordInput(attrs={'class': 'form-control'})
                               )
 
@@ -45,12 +46,12 @@ class RegisterForm(forms.Form):
                              )
 
     # 校验用户名是否存在
-    def clean_name(self):
-        name_ = self.cleaned_data.get('name')
+    def clean_username(self):
+        name_ = self.cleaned_data.get('username')
         is_exist = models.User.objects.filter(username=name_)
         if is_exist:
             # 用户已存在
-            self.add_error('name', '用户名已存在')
+            self.add_error('username', '用户名已存在')
         return name_
 
     # 校验两次密码是否一致

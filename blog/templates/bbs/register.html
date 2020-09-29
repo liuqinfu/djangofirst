@@ -18,12 +18,12 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <h1 class="text-center">注册</h1>
-            <form action="" method="post" novalidate>
+            <form id="register_form" novalidate>
                 {% for register in register_form %}
                     <div class="form-group">
-                        <label for="">{{ register.label }}</label>
+                        <label id="{{ register.auto_id }}">{{ register.label }}</label>
                         {{ register }}
-                        <span type="color: red">{{ register.errors.0 }}</span>
+                        <span style="color: red" class="pull-right">{{ register.errors.0 }}</span>
                     </div>
                 {% endfor %}
                 <div class="form-group">
@@ -32,7 +32,7 @@
                     </label>
                     <input type="file" name="avatar" id="myAvatar" style="display: none">
                 </div>
-                <input type="submit" class="form-control btn btn-primary pull-right" value="注册">
+                <input type="button" id="submit" class="btn btn-primary pull-right" value="注册">
             </form>
         </div>
     </div>
@@ -52,7 +52,47 @@
             //利用文件阅读器将文件展示在页面上
         $('#myAvatarImg').attr('src',fileReader.result)
         }
+    })
+    //ajax提交注册请求
+    $('#submit').click(function () {
+        let formData = new FormData();
+        let formArr = $('#register_form').serializeArray();
+        $.each(formArr,function (index, item) {
+            formData.append(item.name,item.value)
+        })
+        formData.append('avatar',$('#myAvatar')[0].files[0])
+        $.ajax({
+            url:'',
+            method:'post',
+            data:formData,
+            contentType:false,
+            processData:false,
+            success: function (res){
+                switch(res.code){
+                    case 200:
+                        window.location.href=res.url
+                    case 402:
+                        //失败
+                        $.each(res.errors,function (name, value) {
+                            let targetId = '#id_'+name
+                            let err_span = $(targetId).siblings('span').get(0);
+                            $(err_span).text(value[0])
+                            $(err_span).parent().addClass('has-error')
+                        })
+                        break
+                }
 
+            },
+            error:function (error){
+                alert(error)
+            }
+        })
+    })
+    //输入框获取光标  删除错误提示和红色错误框显示
+    $('input').focus(function(){
+        let err_span = $(this).siblings('span').get(0);
+        $(err_span).text('')
+        $(err_span).parent().removeClass('has-error')
     })
 </script>
 </body>

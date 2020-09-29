@@ -4,7 +4,8 @@ from django.urls import path, re_path
 from bbs import views
 
 urlpatterns = [
-    re_path('^$', views.index),
+    path('get_code',views.get_code,name = 'get_code'),
+    path('login', views.login),
     path('register', views.register),
 
 ]
