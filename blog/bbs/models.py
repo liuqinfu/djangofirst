@@ -7,7 +7,7 @@ from django.db import models
 # 用户表
 class User(AbstractUser):
     phone = models.CharField(max_length=11, null=True, verbose_name='手机号')
-    avatar = models.FileField(upload_to='avatar/', default='avatar/default.jpg', verbose_name='头像')
+    avatar = models.FileField(upload_to='static/img/avatar/', default='static/img/avatar/default.jpg', verbose_name='头像')
     create_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     site = models.OneToOneField(to='Site', null=True, on_delete=models.DO_NOTHING)
 

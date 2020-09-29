@@ -38,16 +38,41 @@
                 </div>
             </div>
             <input type="button" class="btn btn-success" name="login" id="login" value="登陆">
+            <label id="error" style="color: red"></label>
         </div>
 
     </div>
 </div>
 <script>
+    //刷新验证码
     $('#id_code').click(function () {
         let src = $(this).attr('src');
         let src_arr = src.split('?');
-        let src_new = src_arr[0]+"?"+ Date.parse(new Date())
-        $(this).attr('src',src_new);
+        let src_new = src_arr[0] + "?" + Date.parse(new Date())
+        $(this).attr('src', src_new);
+    })
+    //登录
+    $('#login').click(function () {
+        $.ajax({
+            url: '',
+            method: 'post',
+            data: {'username': $('#username').val(), 'password': $("#password").val(), 'code': $("#code").val()},
+            {#contentType:'application/json',#}
+            success: function (res) {
+                switch (res.code) {
+                    case 200:
+                        window.location.href = res.url
+                        break
+                    case 201:
+                    case 202:
+                        console.log(res)
+                        $('#error').text(res.msg)
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
     })
 </script>
 </body>

@@ -1,43 +1,46 @@
-
-
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
+from django.urls import reverse
+
 from bbs.forms import RegisterForm
 from bbs import models
 
 # 图片相关模块 pip3 install pillow
-from PIL import Image,ImageDraw,ImageFont
+from PIL import Image, ImageDraw, ImageFont
+
 '''
 Image:生成图片
 ImageDraw：在图片上乱涂乱画
 ImageFont：控制字体样式
 '''
 
-from io import BytesIO,StringIO
+from io import BytesIO, StringIO
+
 '''
 内存管理器模块
 BytesIO：临时存储数据，返回的时候数据是二进制数据
 StringIO：临时存储数据，返回的时候数据是字符串
 '''
 
-#获取验证码
+# 获取验证码
 import random
 
-#生成随机验证码背景色
+
+# 生成随机验证码背景色
 def get_random():
-    return random.randint(0,255),random.randint(0,255),random.randint(0,255)
-
-
+    return random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
 
 
 def get_code(request):
-    #方式1  直接获取后端线程的图片二进制数据发送给前端
+    # 方式1  直接获取后端线程的图片二进制数据发送给前端
     # with open('avatar/捕获.PNG','rb') as f:
     #     data = f.read()
 
-    #方式2  利用pillow模块动态产生图片
+    # 方式2  利用pillow模块动态产生图片
     # image_obj = Image.new('RGB', (300, 35), 'gray')
     # #将图片对象保存  然后读取出来
     # with open('xxx.png','wb') as f:
@@ -45,10 +48,10 @@ def get_code(request):
     # with open('xxx.png','rb') as f:
     #     data = f.read()
 
-    #方式3  方式2的文件存储繁琐 io操作频繁，效率低，借助内存管理模块
+    # 方式3  方式2的文件存储繁琐 io操作频繁，效率低，借助内存管理模块
     image_obj = Image.new('RGB', (300, 35), get_random())
-    io_obj = BytesIO() #生成内存管理器对象   可以看成文件句柄
-    image_obj.save(io_obj,'png')
+    io_obj = BytesIO()  # 生成内存管理器对象   可以看成文件句柄
+    image_obj.save(io_obj, 'png')
 
     # 写图片验证码
     # image_obj = Image.new('RGB', (300, 35), get_random())
@@ -63,19 +66,36 @@ def get_code(request):
         random_lower = chr(random.randint(97, 122))
         random_int = str(random.randint(0, 9))
         # 从上面三个钟随机选择一个
-        tmp= random.choice([random_super, random_lower, random_int])
+        tmp = random.choice([random_super, random_lower, random_int])
         # 将验证码写到图片上
         # 一个一个写  可以控制间隙
-        draw_obj.text((i*45, 0), tmp, get_random(), font_obj)
+        draw_obj.text((i * 45, 0), tmp, get_random(), font_obj)
         code += tmp
-    #随机验证码需要在登陆视图函数中使用，做比对
-    request.session['code']=code
+    # 随机验证码需要在登陆视图函数中使用，做比对
+    request.session['code'] = code
     io_obj = BytesIO()
-    image_obj.save(io_obj,'png')
+    image_obj.save(io_obj, 'png')
     return HttpResponse(io_obj.getvalue())
 
 
 def login(request):
+    if request.method == 'POST':
+        res = {'code': 200, 'msg': 'success'}
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        code = request.POST.get('code')
+        if request.session.get('code').upper() == code.upper():
+            authenticate = auth.authenticate(request, username=username, password=password)
+            if authenticate:
+                auth.login(request, authenticate)
+                res['url'] = '/bbs/home'
+            else:
+                res['code'] = 201
+                res['msg'] = '用户名或密码错误'
+        else:
+            res['code'] = 202
+            res['msg'] = '验证码错误'
+        return JsonResponse(res)
     return render(request, 'bbs/login.html')
 
 
@@ -93,10 +113,20 @@ def register(request):
                 cleaned_data['avatar'] = avatar
             # 插入数据库
             models.User.objects.create_user(**cleaned_data)
-            res['url'] = '/bbs/login'
+            res['url'] = reverse('bbs:login')
         else:
             res['code'] = 402
             res['msg'] = 'fail'
             res['errors'] = register_form.errors
         return JsonResponse(res)
     return render(request, 'bbs/register.html', locals())
+
+
+def home(request):
+    return render(request, 'bbs/home.html', locals())
+
+
+@login_required
+def logout(request):
+    auth.logout(request)
+    return render(request, 'bbs/home.html', locals())

@@ -19,6 +19,7 @@
         <div class="col-md-8 col-md-offset-2">
             <h1 class="text-center">注册</h1>
             <form id="register_form" novalidate>
+                {% csrf_token %}
                 {% for register in register_form %}
                     <div class="form-group">
                         <label id="{{ register.auto_id }}">{{ register.label }}</label>
