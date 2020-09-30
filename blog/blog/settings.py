@@ -135,3 +135,22 @@ AUTH_USER_MODEL = 'bbs.User'
 
 #配置用户上传的文件存储位置
 MEDIA_ROOT=BASE_DIR.joinpath('media')
+
+
+LOGGING={
+    'version':1,
+    'disable_existing_loggers':False,
+    'handlers':{
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+        }
+    },
+    'loggers':{
+        'django.db.backends':{
+            'handlers':['console'],
+            'propagate':True,
+            'level':'DEBUG'
+        }
+    }
+}

@@ -1,5 +1,7 @@
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
@@ -88,7 +90,7 @@ def login(request):
             authenticate = auth.authenticate(request, username=username, password=password)
             if authenticate:
                 auth.login(request, authenticate)
-                res['url'] = '/bbs/home'
+                res['url'] = reverse('bbs:home')
             else:
                 res['code'] = 201
                 res['msg'] = '用户名或密码错误'
@@ -122,7 +124,10 @@ def register(request):
     return render(request, 'bbs/register.html', locals())
 
 
+# 首页
 from utils import pagehelper
+
+
 def home(request):
     article_list = models.Article.objects.all()
     current_page = request.GET.get("page", 1)
@@ -132,15 +137,18 @@ def home(request):
     return render(request, 'bbs/home.html', locals())
 
 
+# 登出
 @login_required
 def logout(request):
     auth.logout(request)
     return redirect(reverse('bbs:home'), locals())
 
+
+# 修改密码
 @login_required
 def changepassword(request):
     if request.is_ajax() and request.method == 'POST':
-        res={'code':200,'msg': 'success'}
+        res = {'code': 200, 'msg': 'success'}
         oldpassword = request.POST.get('oldpassword')
         newpassword = request.POST.get('newpassword')
         confirmnewpassword = request.POST.get('confirmnewpassword')
@@ -154,10 +162,57 @@ def changepassword(request):
                     request.user.set_password(newpassword)
                     request.user.save()
             else:
-                res['code']=202
-                res['msg']='确认密码与新密码不一致'
+                res['code'] = 202
+                res['msg'] = '确认密码与新密码不一致'
         else:
-            res['code']=201
+            res['code'] = 201
             res['msg'] = '原密码错误'
         return JsonResponse(res)
     return render(request, 'bbs/home.html', locals())
+
+
+# 用户站点首页
+def usersite(request, username, **kwargs):
+    '''
+    :param request:
+    :param username:
+    :param kwargs: 有值，则需要对article_list做进一步筛选
+    :return:
+    '''
+    print(kwargs)
+    # 判断用户是否存在
+    user = models.User.objects.filter(username=username).first()
+    if not user:
+        # 返回404页面
+        return render(request, 'bbs/404.html')
+
+    # 查询分类及对应文章数
+    categories = models.Category.objects.filter(site=user.site).annotate(count_num=Count('article__pk')).values('pk','name','count_num')
+    labels = models.Label.objects.filter(site=user.site).annotate(count_num=Count('article__pk')).values('pk','name',
+                                                                                                         'count_num')
+    months = models.Article.objects.filter(site=user.site).annotate(month=TruncMonth('create_time')).values(
+        'month').annotate(count_num=Count('pk')).values('month', 'count_num')
+
+    # 查询文章
+    article_list = models.Article.objects.filter(site__user__username=username)
+    if kwargs:
+        condition = kwargs.get('condition')
+        param = kwargs.get('param')
+        if condition == 'label':
+            article_list = article_list.filter(labels__in=[param])
+        elif condition == 'category':
+            article_list = article_list.filter(category__pk=param)
+        elif condition == 'archive':
+            year,month = param.split('-')
+            article_list = article_list.filter(create_time__year=year, create_time__month=month)
+
+    current_page = request.GET.get("page", 1)
+    all_count = article_list.count()
+    page_obj = pagehelper.Pagination(current_page=current_page, all_count=all_count, per_page_num=10)
+    page_queryset = article_list[page_obj.start:page_obj.end]
+    return render(request, 'bbs/site.html', locals())
+
+
+# 按标签查询站点内的文章
+def usersitebytype(request, username, type, typename):
+    pass
