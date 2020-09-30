@@ -122,11 +122,42 @@ def register(request):
     return render(request, 'bbs/register.html', locals())
 
 
+from utils import pagehelper
 def home(request):
+    article_list = models.Article.objects.all()
+    current_page = request.GET.get("page", 1)
+    all_count = article_list.count()
+    page_obj = pagehelper.Pagination(current_page=current_page, all_count=all_count, per_page_num=10)
+    page_queryset = article_list[page_obj.start:page_obj.end]
     return render(request, 'bbs/home.html', locals())
 
 
 @login_required
 def logout(request):
     auth.logout(request)
+    return redirect(reverse('bbs:home'), locals())
+
+@login_required
+def changepassword(request):
+    if request.is_ajax() and request.method == 'POST':
+        res={'code':200,'msg': 'success'}
+        oldpassword = request.POST.get('oldpassword')
+        newpassword = request.POST.get('newpassword')
+        confirmnewpassword = request.POST.get('confirmnewpassword')
+        is_right = request.user.check_password(oldpassword)
+        if is_right:
+            if newpassword == confirmnewpassword:
+                if len(newpassword) == 0:
+                    res['code'] = 203
+                    res['msg'] = '新密码不能为空'
+                else:
+                    request.user.set_password(newpassword)
+                    request.user.save()
+            else:
+                res['code']=202
+                res['msg']='确认密码与新密码不一致'
+        else:
+            res['code']=201
+            res['msg'] = '原密码错误'
+        return JsonResponse(res)
     return render(request, 'bbs/home.html', locals())

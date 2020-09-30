@@ -132,3 +132,6 @@ STATICFILES_DIRS = [
 ]
 
 AUTH_USER_MODEL = 'bbs.User'
+
+#配置用户上传的文件存储位置
+MEDIA_ROOT=BASE_DIR.joinpath('media')

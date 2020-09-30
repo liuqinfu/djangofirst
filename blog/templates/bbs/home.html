@@ -58,25 +58,165 @@
                     <li><a href="{% url 'bbs:login' %}">登录</a></li>
                     <li><a href="{% url 'bbs:register' %}">注册</a></li>
                 {% else %}
-                    <li><a href="#"><img src="{{ request.user.avatar }}" width="30px" height="30px"
+                    <li><a href="#"><img src="media/{{ request.user.avatar }}" width="30px" height="30px"
                                          class="img-circle"></a></li>
                     <li><a href="#">{{ request.user.username }}</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">更多<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">修改密码</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#changepassword">修改密码</a></li>
                             <li><a href="#">修改头像</a></li>
                             <li><a href="#">后台管理</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="{% url 'bbs:logout' %}">退出登录</a></li>
                         </ul>
                     </li>
+                    <!-- Modal -->
+                    <div class="modal fade" id="changepassword" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="group-form">
+                                        <label>登录名</label>
+                                        <input type="text" id="username" class="form-control" disabled
+                                               value="{{ request.user.username }}">
+                                    </div>
+                                    <div class="group-form">
+                                        <label>原密码</label>
+                                        <input type="password" id="oldpassword" class="form-control">
+                                    </div>
+                                    <div class="group-form">
+                                        <label>新密码</label>
+                                        <input type="password" id="newpassword" class="form-control">
+                                    </div>
+                                    <div class="group-form">
+                                        <label>确认密码</label>
+                                        <input type="password" id="confirmnewpassword" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <span id="error" class="pull-left" style="color: red"></span>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                    <button type="button" class="btn btn-primary" id="submit_password">提交</button>
+                                    <br>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endif %}
 
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+<div class="container-fluid">
+    <div class="col-md-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">Panel heading without title</div>
+            <div class="panel-body">
+                Panel content
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">Panel heading without title</div>
+            <div class="panel-body">
+                Panel content
+            </div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading">Panel heading without title</div>
+            <div class="panel-body">
+                Panel content
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        {% for article in page_queryset %}
+
+            <ul class="media-list">
+                <li class="media">
+                    <h4 class="media-heading"><a href="#">{{ article.title }}</a></h4>
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object" src="media/{{article.site.user.avatar }}" alt="..." width="50px" height="50px" />
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        {{ article.content|truncatechars:200 }}
+                    </div>
+                </li>
+            </ul>
+            <div>
+                <span><a href="#">{{ article.site.user.username }}</a></span>
+                <span>发布于</span>
+                <span>{{ article.create_time|date:'Y-m-d H:i:s' }}</span>
+                &nbsp;&nbsp;<span><span class="glyphicon glyphicon-comment glyphicon-align-left"></span>&nbsp;{{ article.comment_num }}</span>
+                &nbsp;&nbsp;<span><span class="glyphicon glyphicon-thumbs-up glyphicon-align-left"></span>&nbsp;{{ article.up_num }}</span>
+                &nbsp;&nbsp;<span><span class="glyphicon glyphicon-thumbs-down glyphicon-align-left"></span>&nbsp;{{ article.down_num }}</span>
+
+            </div>
+            <hr>
+        {% endfor %}
+        {{ page_obj.page_html|safe }}
+    </div>
+    <div class="col-md-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">Panel heading without title</div>
+            <div class="panel-body">
+                Panel content
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">Panel heading without title</div>
+            <div class="panel-body">
+                Panel content
+            </div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading">Panel heading without title</div>
+            <div class="panel-body">
+                Panel content
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //修改密码
+    $("#submit_password").click(function () {
+        $.ajax({
+            url: '{% url 'bbs:changepassword' %}',
+            method: 'post',
+            data: {
+                'username': $("#username").val(),
+                'oldpassword': $("#oldpassword").val(),
+                'newpassword': $("#newpassword").val(),
+                'confirmnewpassword': $("#confirmnewpassword").val()
+            },
+            success: function (res) {
+                switch (res.code) {
+                    case 200:
+                        swal("已保存!", "密码修改成功!", "success", location.reload())
+                        break
+                    case 201:
+                    case 202:
+                    case 203:
+                        $("#error").text(res.msg)
+                        break
+                }
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        })
+    })
+</script>
 </body>
 </html>
