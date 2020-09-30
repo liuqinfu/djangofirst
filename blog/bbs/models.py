@@ -10,7 +10,7 @@ class User(AbstractUser):
     avatar = models.FileField(upload_to='avatar/', default='avatar/default.jpg',
                               verbose_name='头像')
     create_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
-    site = models.OneToOneField(to='Site', null=True, on_delete=models.DO_NOTHING)
+    site = models.OneToOneField(verbose_name='站点',to='Site', null=True, on_delete=models.DO_NOTHING)
 
     class Meta:
         verbose_name_plural = '用户表'
@@ -35,7 +35,7 @@ class Site(models.Model):
 # 标签表
 class Label(models.Model):
     name = models.CharField(max_length=50, verbose_name='标签名')
-    site = models.ForeignKey(to='Site', null=True, on_delete=models.CASCADE)
+    site = models.ForeignKey(verbose_name='站点',to='Site', null=True, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = '标签表'
@@ -47,7 +47,7 @@ class Label(models.Model):
 # 类别表
 class Category(models.Model):
     name = models.CharField(max_length=50, verbose_name='分类名')
-    site = models.ForeignKey(to='Site', null=True, on_delete=models.CASCADE)
+    site = models.ForeignKey(verbose_name='站点',to='Site', null=True, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = '分类表'
@@ -65,9 +65,9 @@ class Article(models.Model):
     up_num = models.BigIntegerField(verbose_name='点赞数',default=0)
     down_num = models.BigIntegerField(verbose_name='点踩数',default=0)
     comment_num = models.BigIntegerField(verbose_name='评论数',default=0)
-    site = models.ForeignKey(to='Site', on_delete=models.DO_NOTHING)
-    category = models.ForeignKey(to='Category', on_delete=models.DO_NOTHING)
-    labels = models.ManyToManyField(to='Label', through='Article2Label', through_fields=('article', 'label'))
+    site = models.ForeignKey(verbose_name='站点',to='Site', on_delete=models.DO_NOTHING)
+    category = models.ForeignKey(verbose_name='分类',to='Category', on_delete=models.DO_NOTHING)
+    labels = models.ManyToManyField(verbose_name='站点',to='Label', through='Article2Label', through_fields=('article', 'label'))
 
     class Meta:
         verbose_name_plural = '文章表'
