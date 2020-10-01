@@ -82,7 +82,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': 3306,
         'USER': 'root',
-        'PASSWORD':'',
+        'PASSWORD':'root',
         'CHARSET':'utf8'
     }
 }
@@ -124,7 +124,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/bbs/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR.joinpath('static'),
@@ -132,6 +132,8 @@ STATICFILES_DIRS = [
 ]
 
 AUTH_USER_MODEL = 'bbs.User'
+
+LOGIN_URL='/bbs/login'
 
 #配置用户上传的文件存储位置
 MEDIA_ROOT=BASE_DIR.joinpath('media')
