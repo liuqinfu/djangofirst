@@ -179,20 +179,11 @@ def usersite(request, username, **kwargs):
     :param kwargs: 有值，则需要对article_list做进一步筛选
     :return:
     '''
-    print(kwargs)
     # 判断用户是否存在
     user = models.User.objects.filter(username=username).first()
     if not user:
         # 返回404页面
         return render(request, 'bbs/404.html')
-
-    # 查询分类及对应文章数
-    categories = models.Category.objects.filter(site=user.site).annotate(count_num=Count('article__pk')).values('pk','name','count_num')
-    labels = models.Label.objects.filter(site=user.site).annotate(count_num=Count('article__pk')).values('pk','name',
-                                                                                                         'count_num')
-    months = models.Article.objects.filter(site=user.site).annotate(month=TruncMonth('create_time')).values(
-        'month').annotate(count_num=Count('pk')).values('month', 'count_num')
-
     # 查询文章
     article_list = models.Article.objects.filter(site__user__username=username)
     if kwargs:
@@ -203,7 +194,7 @@ def usersite(request, username, **kwargs):
         elif condition == 'category':
             article_list = article_list.filter(category__pk=param)
         elif condition == 'archive':
-            year,month = param.split('-')
+            year, month = param.split('-')
             article_list = article_list.filter(create_time__year=year, create_time__month=month)
 
     current_page = request.GET.get("page", 1)
@@ -213,6 +204,15 @@ def usersite(request, username, **kwargs):
     return render(request, 'bbs/site.html', locals())
 
 
-# 按标签查询站点内的文章
-def usersitebytype(request, username, type, typename):
-    pass
+# 文章详情
+def articledetail(request, username, artileid):
+    '''
+    文章详情
+    :param request:
+    :param username: 文章发表用户
+    :param artile: 文章唯一编号
+    :return:
+    '''
+    user = models.User.objects.filter(username=username).first()
+    article = models.Article.objects.filter(pk=artileid, site__user__username=username).first()
+    return render(request,'bbs/article_detail.html',locals())

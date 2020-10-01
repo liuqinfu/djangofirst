@@ -1,0 +1,26 @@
+<div class="panel panel-primary">
+            <div class="panel-heading">文章分类</div>
+            <div class="panel-body">
+                {% for category in categories %}
+                    <p><a href="{% url 'bbs:sitebycondition' user.username 'category' category.pk %}">{{ category.name }}({{ category.count_num }})</a></p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="panel panel-danger">
+            <div class="panel-heading">文章标签</div>
+            <div class="panel-body">
+                {% for label in labels %}
+                    <p><a href="{% url 'bbs:sitebycondition' user.username 'label' label.pk %}">{{ label.name }}({{ label.count_num }})</a></p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading">日期归档</div>
+            <div class="panel-body">
+                {% for month in months %}
+                    <p><a href="{% url 'bbs:sitebycondition' user.username 'archive' month.month|date:'Y-m' %}">{{ month.month|date:'Y年m月' }}({{ month.count_num }})</a></p>
+
+                {% endfor %}
+
+            </div>
+        </div>

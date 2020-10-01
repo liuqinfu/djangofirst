@@ -7,6 +7,11 @@
     <!-- 使用bootstrap动画必须引入，动画依赖jquery -->
     <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
     <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <style type="text/css">
+        {% block css %}
+        {% endblock %}
+    </style>
+
     <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
     <!-- 第三方弹窗 -->
     <script src="{% static 'js/sweetalert.min.js' %}"></script>
@@ -25,9 +30,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'bbs:home' %}">BBS</a>
+            <a class="navbar-brand" href="{% url 'bbs:usersite' user.username %}">{{ user.site.name }}</a>
         </div>
-
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
@@ -58,7 +62,7 @@
                     <li><a href="{% url 'bbs:login' %}">登录</a></li>
                     <li><a href="{% url 'bbs:register' %}">注册</a></li>
                 {% else %}
-                    <li><a href="#"><img src="media/{{ request.user.avatar }}" width="30px" height="30px"
+                    <li><a href="#"><img src="/bbs/media/{{ request.user.avatar }}" width="30px" height="30px"
                                          class="img-circle"></a></li>
                     <li><a href="#">{{ request.user.username }}</a></li>
                     <li class="dropdown">
@@ -119,108 +123,16 @@
 </nav>
 <div class="container-fluid">
     <div class="col-md-2">
-        <div class="panel panel-primary">
-            <div class="panel-heading">文章分类</div>
-            <div class="panel-body">
-                Panel content
-            </div>
-        </div>
-        <div class="panel panel-danger">
-            <div class="panel-heading">文章标签</div>
-            <div class="panel-body">
-                Panel content
-            </div>
-        </div>
-        <div class="panel panel-info">
-            <div class="panel-heading">日期归档</div>
-            <div class="panel-body">
-                Panel content
-            </div>
-        </div>
+        {% load myTag %}
+        {% sidecontent username %}
     </div>
-    <div class="col-md-8">
-        {% for article in page_queryset %}
+    <div class="col-md-10">
+        {% block articles %}
 
-            <ul class="media-list">
-                <li class="media">
-                    <h4 class="media-heading"><a href="{% url 'bbs:articledetail' article.site.user.username article.pk %}">{{ article.title }}</a></h4>
-                    <div class="media-left">
-                        <a href="#">
-                            <img class="media-object" src="media/{{ article.site.user.avatar }}" alt="..." width="50px"
-                                 height="50px"/>
-                        </a>
-                    </div>
-                    <div class="media-body">
-                        {{ article.desc|truncatechars:200 }}
-                    </div>
-                </li>
-                <div>
-                    <span><a href="{{ article.site.user.username }}">{{ article.site.user.username }}</a></span>
-                    <span>发布于</span>
-                    <span>{{ article.create_time|date:'Y-m-d H:i:s' }}</span>
-                    &nbsp;&nbsp;<span><span
-                        class="glyphicon glyphicon-comment glyphicon-align-left"></span>&nbsp;{{ article.comment_num }}</span>
-                    &nbsp;&nbsp;<span><span
-                        class="glyphicon glyphicon-thumbs-up glyphicon-align-left"></span>&nbsp;{{ article.up_num }}</span>
-                    &nbsp;&nbsp;<span><span
-                        class="glyphicon glyphicon-thumbs-down glyphicon-align-left"></span>&nbsp;{{ article.down_num }}</span>
-
-                </div>
-            </ul>
-            <hr>
-        {% endfor %}
-        {{ page_obj.page_html|safe }}
-    </div>
-    <div class="col-md-2">
-        <div class="panel panel-primary">
-            <div class="panel-heading">文章分类</div>
-            <div class="panel-body">
-                Panel content
-            </div>
-        </div>
-        <div class="panel panel-danger">
-            <div class="panel-heading">文章标签</div>
-            <div class="panel-body">
-                Panel content
-            </div>
-        </div>
-        <div class="panel panel-info">
-            <div class="panel-heading">日期归档</div>
-            <div class="panel-body">
-                Panel content
-            </div>
-        </div>
+        {% endblock %}
     </div>
 </div>
-<script>
-    //修改密码
-    $("#submit_password").click(function () {
-        $.ajax({
-            url: '{% url 'bbs:changepassword' %}',
-            method: 'post',
-            data: {
-                'username': $("#username").val(),
-                'oldpassword': $("#oldpassword").val(),
-                'newpassword': $("#newpassword").val(),
-                'confirmnewpassword': $("#confirmnewpassword").val()
-            },
-            success: function (res) {
-                switch (res.code) {
-                    case 200:
-                        swal("已保存!", "密码修改成功!", "success", location.reload())
-                        break
-                    case 201:
-                    case 202:
-                    case 203:
-                        $("#error").text(res.msg)
-                        break
-                }
-            },
-            error: function (error) {
-                console.log(error)
-            }
-        })
-    })
-</script>
+{% block boot_js %}
+{% endblock %}
 </body>
 </html>

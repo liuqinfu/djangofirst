@@ -32,5 +32,7 @@ urlpatterns = [
     # re_path('(?P<username>\w+)/archive/(?P<month>\w+)',views.usersite,name='usersitebymonth'),
     # 站点综合
     re_path('^(?P<username>\w+)/(?P<condition>label|category|archive)/(?P<param>.*)/', views.usersite,name='sitebycondition'),
+    # 文章详情
+    re_path('^(?P<username>\w+)/article/(?P<artileid>\d+)/',views.articledetail,name='articledetail'),
 
 ]

@@ -1,0 +1,128 @@
+{% extends 'bbs/base.html' %}
+{% block css %}
+    #author_profile {
+    float: left;
+    width: 280px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #000;
+    margin-left: 0;
+    font-size: 12px;
+    }
+    .author_profile_info {
+    float: left;
+    line-height: 18px;
+    }
+    .postBody a:link, .postBody a:visited, .postBody a:active {
+    text-decoration: underline;
+    }
+    .author_avatar {
+    vertical-align: top;
+    float: left;
+    margin-right: 5px;
+    padding-top: 5px;
+    padding-left: 2px;
+    border: 0;
+    with: 50px;
+    height: 50px;
+    }
+    .author_profile_info {
+    float: left;
+    line-height: 18px;
+    }
+    .clear {
+    clear: both;
+    }
+
+
+
+
+    #div_digg {
+    float: right;
+    margin-bottom: 10px;
+    margin-right: 30px;
+    font-size: 12px;
+    width: 125px;
+    text-align: center;
+    margin-top: 10px;
+    }
+    .diggit {
+    float: left;
+    width: 46px;
+    height: 52px;
+    background: url(/bbs/static/img/upup.gif) no-repeat;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 2px;
+    padding-top: 5px;
+    }
+    #div_digg .diggnum {
+    line-height: 1.5em !important;
+    }
+    .diggnum {
+    font-size: 14px;
+    color: #075db3;
+    font-family: Verdana;
+    }
+
+    .buryit {
+    float: right;
+    margin-left: 20px;
+    width: 46px;
+    height: 52px;
+    background: url(/bbs/static/img/downdown.gif) no-repeat;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 2px;
+    padding-top: 5px;
+    }
+
+    #div_digg .burynum {
+    line-height: 1.5em !important;
+    }
+    .burynum {
+    font-size: 14px;
+    color: #075db3;
+    font-family: Verdana;
+    }
+
+{% endblock %}
+{% block articles %}
+    <h1>{{ article.title }}</h1>
+    <div>
+        {{ article.content|safe }}
+    </div>
+    <div id="author_profile">
+        <div id="author_profile_info" class="author_profile_info">
+            <a href="{% url 'bbs:usersite' user.username %}" target="_blank"><img
+                    src="/bbs/media/{{ user.avatar }}" class="author_avatar" alt=""></a>
+            <div id="author_profile_detail" class="author_profile_info">
+                <a href="{% url 'bbs:usersite' user.username %}">{{ user.username }}</a><br>
+                <a href="{% url 'bbs:usersite' user.username %}">关注 - 0</a><br>
+                <a href="{% url 'bbs:usersite' user.username %}">粉丝 - 9</a>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <div id="author_profile_honor"></div>
+        <div id="author_profile_follow">
+            <a href="javascript:void(0);"
+               onclick="follow('4a0c3a4f-a568-4a96-a4fe-08d6d49629c6');return false;">+加关注</a>
+        </div>
+    </div>
+    <div id="div_digg">
+        <div class="diggit" onclick="votePost(10687068,'Digg')">
+            <span class="diggnum" id="digg_count">{{ article.up_num }}</span>
+        </div>
+        <div class="buryit" onclick="votePost(10687068,'Bury')">
+            <span class="burynum" id="bury_count">{{ article.down_num }}</span>
+        </div>
+        <div class="clear"></div>
+        <div class="diggword" id="digg_tips">
+        </div>
+    </div>
+{% endblock %}
+{% block boot_js %}
+    <script>
+
+    </script>
+{% endblock %}

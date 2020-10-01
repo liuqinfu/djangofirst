@@ -1,218 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    {% load static %}
-    <!-- 使用bootstrap动画必须引入，动画依赖jquery -->
-    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
-    <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
-    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
-    <!-- 第三方弹窗 -->
-    <script src="{% static 'js/sweetalert.min.js' %}"></script>
-    <!-- 全局异常处理 -->
-    <script src="{% static 'js/setup.js' %}"></script>
-</head>
-<body>
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">{{ user.site.name }}</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">博客 <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Link</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Dropdown <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <form class="navbar-form navbar-left">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
+{% extends 'bbs/base.html' %}
+{% block articles %}
+    {% for article in page_queryset %}
+        <ul class="media-list">
+            <li class="media">
+                <h4 class="media-heading"><a href="{% url 'bbs:articledetail' username article.pk %}">{{ article.title }}</a></h4>
+                <div class="media-body">
+                    {{ article.desc|truncatechars:200 }}
                 </div>
-                <button type="submit" class="btn btn-default">Submit</button>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                {% if not request.user.is_authenticated %}
-                    <li><a href="{% url 'bbs:login' %}">登录</a></li>
-                    <li><a href="{% url 'bbs:register' %}">注册</a></li>
-                {% else %}
-                    <li><a href="#"><img src="/bbs/media/{{ request.user.avatar }}" width="30px" height="30px"
-                                         class="img-circle"></a></li>
-                    <li><a href="#">{{ request.user.username }}</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">更多<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#" data-toggle="modal" data-target="#changepassword">修改密码</a></li>
-                            <li><a href="#">修改头像</a></li>
-                            <li><a href="#">后台管理</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="{% url 'bbs:logout' %}">退出登录</a></li>
-                        </ul>
-                    </li>
-                    <!-- Modal -->
-                    <div class="modal fade" id="changepassword" tabindex="-1" role="dialog"
-                         aria-labelledby="myModalLabel">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title" id="myModalLabel">修改密码</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="group-form">
-                                        <label>登录名</label>
-                                        <input type="text" id="username" class="form-control" disabled
-                                               value="{{ request.user.username }}">
-                                    </div>
-                                    <div class="group-form">
-                                        <label>原密码</label>
-                                        <input type="password" id="oldpassword" class="form-control">
-                                    </div>
-                                    <div class="group-form">
-                                        <label>新密码</label>
-                                        <input type="password" id="newpassword" class="form-control">
-                                    </div>
-                                    <div class="group-form">
-                                        <label>确认密码</label>
-                                        <input type="password" id="confirmnewpassword" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <span id="error" class="pull-left" style="color: red"></span>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                                    <button type="button" class="btn btn-primary" id="submit_password">提交</button>
-                                    <br>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
-<div class="container-fluid">
-    <div class="col-md-2">
-        <div class="panel panel-primary">
-            <div class="panel-heading">文章分类</div>
-            <div class="panel-body">
-                {% for category in categories %}
-                    <p><a href="{% url 'bbs:sitebycondition' user.username 'category' category.pk %}">{{ category.name }}({{ category.count_num }})</a></p>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="panel panel-danger">
-            <div class="panel-heading">文章标签</div>
-            <div class="panel-body">
-                {% for label in labels %}
-                    <p><a href="{% url 'bbs:sitebycondition' user.username 'label' label.pk %}">{{ label.name }}({{ label.count_num }})</a></p>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="panel panel-info">
-            <div class="panel-heading">日期归档</div>
-            <div class="panel-body">
-                {% for month in months %}
-                    <p><a href="{% url 'bbs:sitebycondition' user.username 'archive' month.month|date:'Y-m' %}">{{ month.month|date:'Y年m月' }}({{ month.count_num }})</a></p>
-
-                {% endfor %}
+            </li>
+            <div class="pull-right">
+                <span>posted</span>
+                <span>@</span>
+                <span>{{ article.create_time|date:'Y-m-d H:i:s' }}</span>
+                <span>{{ article.site.user.username }}</span>
+                &nbsp;&nbsp;<span><span
+                    class="glyphicon glyphicon-comment glyphicon-align-left"></span>&nbsp;{{ article.comment_num }}</span>
+                &nbsp;&nbsp;<span><span
+                    class="glyphicon glyphicon-thumbs-up glyphicon-align-left"></span>&nbsp;{{ article.up_num }}</span>
+                &nbsp;&nbsp;<span><span
+                    class="glyphicon glyphicon-thumbs-down glyphicon-align-left"></span>&nbsp;{{ article.down_num }}</span>
+                &nbsp;&nbsp;<span>&nbsp;<a href="#">编辑</a></span>
 
             </div>
-        </div>
-    </div>
-    <div class="col-md-10">
-        {% block article_list %}
-            {% for article in page_queryset %}
-                <ul class="media-list">
-                    <li class="media">
-                        <h4 class="media-heading"><a href="#">{{ article.title }}</a></h4>
-                        {% comment %}<div class="media-left">
-                        <a href="#">
-                            <img class="media-object" src="media/{{ article.site.user.avatar }}" alt="..." width="50px"
-                                 height="50px"/>
-                        </a>
-                    </div>{% endcomment %}
-                        <div class="media-body">
-                            {{ article.content|truncatechars:200 }}
-                        </div>
-                    </li>
-                    <div class="pull-right">
-                        <span>posted</span>
-                        <span>@</span>
-                        <span>{{ article.create_time|date:'Y-m-d H:i:s' }}</span>
-                        <span>{{ article.site.user.username }}</span>
-                        &nbsp;&nbsp;<span><span
-                            class="glyphicon glyphicon-comment glyphicon-align-left"></span>&nbsp;{{ article.comment_num }}</span>
-                        &nbsp;&nbsp;<span><span
-                            class="glyphicon glyphicon-thumbs-up glyphicon-align-left"></span>&nbsp;{{ article.up_num }}</span>
-                        &nbsp;&nbsp;<span><span
-                            class="glyphicon glyphicon-thumbs-down glyphicon-align-left"></span>&nbsp;{{ article.down_num }}</span>
-                        &nbsp;&nbsp;<span>&nbsp;<a href="#">编辑</a></span>
+        </ul>
 
-                    </div>
-                </ul>
-
-                <hr>
-            {% endfor %}
-            {{ page_obj.page_html|safe }}
-        {% endblock %}
-    </div>
-</div>
-<script>
-    //修改密码
-    $("#submit_password").click(function () {
-        $.ajax({
-            url: '{% url 'bbs:changepassword' %}',
-            method: 'post',
-            data: {
-                'username': $("#username").val(),
-                'oldpassword': $("#oldpassword").val(),
-                'newpassword': $("#newpassword").val(),
-                'confirmnewpassword': $("#confirmnewpassword").val()
-            },
-            success: function (res) {
-                switch (res.code) {
-                    case 200:
-                        swal("已保存!", "密码修改成功!", "success", location.reload())
-                        break
-                    case 201:
-                    case 202:
-                    case 203:
-                        $("#error").text(res.msg)
-                        break
+        <hr>
+    {% endfor %}
+    {{ page_obj.page_html|safe }}
+{% endblock %}
+{% block boot_js %}
+    <script>
+        //修改密码
+        $("#submit_password").click(function () {
+            $.ajax({
+                url: '{% url 'bbs:changepassword' %}',
+                method: 'post',
+                data: {
+                    'username': $("#username").val(),
+                    'oldpassword': $("#oldpassword").val(),
+                    'newpassword': $("#newpassword").val(),
+                    'confirmnewpassword': $("#confirmnewpassword").val()
+                },
+                success: function (res) {
+                    switch (res.code) {
+                        case 200:
+                            swal("已保存!", "密码修改成功!", "success", location.reload())
+                            break
+                        case 201:
+                        case 202:
+                        case 203:
+                            $("#error").text(res.msg)
+                            break
+                    }
+                },
+                error: function (error) {
+                    console.log(error)
                 }
-            },
-            error: function (error) {
-                console.log(error)
-            }
+            })
         })
-    })
-</script>
-</body>
-</html>
+    </script>
+{% endblock %}
