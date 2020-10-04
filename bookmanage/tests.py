@@ -218,7 +218,7 @@ def main():
     '''
     """  在一个with块中属于一个事务
     from django.db import transaction
-    with transaction.Atomic:
+    with transaction.atomic():
         pass
     """
 

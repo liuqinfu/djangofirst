@@ -1,90 +1,104 @@
 {% extends 'bbs/base.html' %}
+{% load static %}
+{% block head_js %}
+    <script src="{% static 'kindeditor/kindeditor-all-min.js' %}"></script>
+    <script src="{% static 'kindeditor/lang/zh-CN.js' %}"></script>
+{% endblock %}
 {% block css %}
-    #author_profile {
-    float: left;
-    width: 280px;
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #000;
-    margin-left: 0;
-    font-size: 12px;
-    }
-    .author_profile_info {
-    float: left;
-    line-height: 18px;
-    }
-    .postBody a:link, .postBody a:visited, .postBody a:active {
-    text-decoration: underline;
-    }
-    .author_avatar {
-    vertical-align: top;
-    float: left;
-    margin-right: 5px;
-    padding-top: 5px;
-    padding-left: 2px;
-    border: 0;
-    with: 50px;
-    height: 50px;
-    }
-    .author_profile_info {
-    float: left;
-    line-height: 18px;
-    }
-    .clear {
-    clear: both;
-    }
+    <style type="text/css">
+        #author_profile {
+            float: left;
+            width: 280px;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #000;
+            margin-left: 0;
+            font-size: 12px;
+        }
+
+        .author_profile_info {
+            float: left;
+            line-height: 18px;
+        }
+
+        .postBody a:link, .postBody a:visited, .postBody a:active {
+            text-decoration: underline;
+        }
+
+        .author_avatar {
+            vertical-align: top;
+            float: left;
+            margin-right: 5px;
+            padding-top: 5px;
+            padding-left: 2px;
+            border: 0;
+            with: 50px;
+            height: 50px;
+        }
+
+        .author_profile_info {
+            float: left;
+            line-height: 18px;
+        }
+
+        .clear {
+            clear: both;
+        }
 
 
+        #div_digg {
+            float: right;
+            margin-bottom: 10px;
+            margin-right: 30px;
+            font-size: 12px;
+            width: 125px;
+            text-align: center;
+            margin-top: 10px;
+        }
 
+        .diggit {
+            float: left;
+            width: 46px;
+            height: 52px;
+            background: url({% static 'img/upup.gif' %}) no-repeat;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 2px;
+            padding-top: 5px;
+        }
 
-    #div_digg {
-    float: right;
-    margin-bottom: 10px;
-    margin-right: 30px;
-    font-size: 12px;
-    width: 125px;
-    text-align: center;
-    margin-top: 10px;
-    }
-    .diggit {
-    float: left;
-    width: 46px;
-    height: 52px;
-    background: url(/bbs/static/img/upup.gif) no-repeat;
-    text-align: center;
-    cursor: pointer;
-    margin-top: 2px;
-    padding-top: 5px;
-    }
-    #div_digg .diggnum {
-    line-height: 1.5em !important;
-    }
-    .diggnum {
-    font-size: 14px;
-    color: #075db3;
-    font-family: Verdana;
-    }
+        #div_digg .diggnum {
+            line-height: 1.5em !important;
+        }
 
-    .buryit {
-    float: right;
-    margin-left: 20px;
-    width: 46px;
-    height: 52px;
-    background: url(/bbs/static/img/downdown.gif) no-repeat;
-    text-align: center;
-    cursor: pointer;
-    margin-top: 2px;
-    padding-top: 5px;
-    }
+        .diggnum {
+            font-size: 14px;
+            color: #075db3;
+            font-family: Verdana;
+        }
 
-    #div_digg .burynum {
-    line-height: 1.5em !important;
-    }
-    .burynum {
-    font-size: 14px;
-    color: #075db3;
-    font-family: Verdana;
-    }
+        .buryit {
+            float: right;
+            margin-left: 20px;
+            width: 46px;
+            height: 52px;
+            background: url({% static 'img/downdown.gif' %}) no-repeat;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 2px;
+            padding-top: 5px;
+        }
+
+        #div_digg .burynum {
+            line-height: 1.5em !important;
+        }
+
+        .burynum {
+            font-size: 14px;
+            color: #075db3;
+            font-family: Verdana;
+        }
+    </style>
 
 {% endblock %}
 {% block articles %}
@@ -92,37 +106,173 @@
     <div>
         {{ article.content|safe }}
     </div>
-    <div id="author_profile">
-        <div id="author_profile_info" class="author_profile_info">
-            <a href="{% url 'bbs:usersite' user.username %}" target="_blank"><img
-                    src="/bbs/media/{{ user.avatar }}" class="author_avatar" alt=""></a>
-            <div id="author_profile_detail" class="author_profile_info">
-                <a href="{% url 'bbs:usersite' user.username %}">{{ user.username }}</a><br>
-                <a href="{% url 'bbs:usersite' user.username %}">关注 - 0</a><br>
-                <a href="{% url 'bbs:usersite' user.username %}">粉丝 - 9</a>
+    <div>
+        <div id="author_profile">
+            <div id="author_profile_info" class="author_profile_info">
+                <a href="{% url 'bbs:usersite' user.username %}" target="_blank"><img
+                        src="/bbs/media/{{ user.avatar }}" class="author_avatar" alt=""></a>
+                <div id="author_profile_detail" class="author_profile_info">
+                    <a href="{% url 'bbs:usersite' user.username %}">{{ user.username }}</a><br>
+                    <a href="{% url 'bbs:usersite' user.username %}">关注 - 0</a><br>
+                    <a href="{% url 'bbs:usersite' user.username %}">粉丝 - 9</a>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <div id="author_profile_honor"></div>
+            <div id="author_profile_follow">
+                <a href="javascript:void(0);"
+                   onclick="follow('4a0c3a4f-a568-4a96-a4fe-08d6d49629c6');return false;">+加关注</a>
             </div>
         </div>
-        <div class="clear"></div>
-        <div id="author_profile_honor"></div>
-        <div id="author_profile_follow">
-            <a href="javascript:void(0);"
-               onclick="follow('4a0c3a4f-a568-4a96-a4fe-08d6d49629c6');return false;">+加关注</a>
+    </div>
+    {#    点赞点踩样式开始#}
+    <div class="clearfix">
+        <div id="div_digg">
+            <div class="diggit action">
+                <span class="diggnum" id="digg_count">{{ article.up_num }}</span>
+            </div>
+            <div class="buryit action">
+                <span class="burynum" id="bury_count">{{ article.down_num }}</span>
+            </div>
+            <div class="clear"></div>
+            <div class="diggword" id="digg_tips">
+            </div>
         </div>
     </div>
-    <div id="div_digg">
-        <div class="diggit" onclick="votePost(10687068,'Digg')">
-            <span class="diggnum" id="digg_count">{{ article.up_num }}</span>
-        </div>
-        <div class="buryit" onclick="votePost(10687068,'Bury')">
-            <span class="burynum" id="bury_count">{{ article.down_num }}</span>
-        </div>
-        <div class="clear"></div>
-        <div class="diggword" id="digg_tips">
-        </div>
+    {#    点赞点踩样式结束#}
+
+    {#    评论楼样式开始#}
+    <div>
+        <p>评论列表</p>
+        <ul class="list-group">
+            {% for comment in comments %}
+                <li class="list-group-item">
+                    <div class="feedbackListSubtitle">
+                        <span>#{{ forloop.counter }}楼</span>
+                        &nbsp;&nbsp;<span>{{ comment.create_time|date:'Y-m-d H:i:s' }}</span>
+                        &nbsp;&nbsp;<span><a
+                            href="{% url 'bbs:usersite' comment.user.username %}">{{ comment.user.username }}</a></span>
+                        <span class="pull-right"><a class="reply" replyuser="{{ comment.user.username }}"
+                                                    replyId="{{ comment.pk }}">回复</a></span>
+                    </div>
+                    <div class="feedbackCon">
+                        {% if not comment.parent_id == null %}
+                            @{{ comment.parent.user.username }}<br>
+                        {% endif %}
+                        {{ comment.content|safe }}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div><br>
+    {#    评论楼样式结束#}
+    {#    文章评论样式开始#}
+    <div>
+        {% if not request.user.is_authenticated %}
+            <li><a href="{% url 'bbs:login' %}">登录</a></li>
+            <li><a href="{% url 'bbs:register' %}">注册</a></li>
+        {% else %}
+            <p><span class="glyphicon glyphicon-comment"></span>发表评论</p>
+            <div>
+                <textarea name="comment" id="comment" cols="60" rows="10"></textarea>
+            </div>
+            <input type="button" id="id_comment" class="btn btn-primary" value="提交评论">
+            <span id="comment_error" style="color: red"></span>
+        {% endif %}
     </div>
 {% endblock %}
 {% block boot_js %}
     <script>
+        //初始化富文本编辑器
+        KindEditor.ready(function (K) {
+            window.editor = K.create('#comment');
+        })
+        //点赞点踩
+        $(".action").click(function () {
+            let is_up = $(this).hasClass("diggit");
+            $.ajax({
+                url: "{% url 'bbs:up_down' %}",
+                method: "post",
+                data: {
+                    "artileId": "{{ article.pk }}",
+                    "is_up": is_up,
+                },
+                success: function (res) {
+                    switch (res.code) {
+                        case 200:
+                            if (is_up) {
+                                let up_num = $("#digg_count").text();
+                                up_num = Number(up_num)
+                                $("#digg_count").text(up_num + 1)
+                            } else {
+                                let down_num = $("#bury_count").text();
+                                down_num = Number(down_num)
+                                $("#bury_count").text(down_num + 1)
+                            }
+                            break;
+                        case 201:
+                        case 202:
+                        case 403:
+                            $("#digg_tips").html(res.msg)
+                            break;
+                    }
+                },
+                error: function (error) {
+                    console.error(error)
+                }
+            })
+        })
+
+        let parentId = null
+        //文章评论
+        $("#id_comment").click(function () {
+            editor.sync();
+            let comment = $("#comment").val();
+            if (parentId != null) {
+                let comment_index = comment.indexOf("\n") + 1;
+                comment = comment.slice(comment_index);
+            }
+            $.ajax({
+                url: "{% url 'bbs:comment' %}",
+                method: "post",
+                data: {
+                    "articleId": "{{ article.pk }}",
+                    "comment": comment,
+                    "parentId": parentId
+                },
+                success: function (res) {
+                    if (res.code == 200) {
+                        curr_comment = `
+                                    <li class="list-group-item">
+                                        <div class="feedbackListSubtitle">
+                                            <span><a>{{ request.user.username }}</a></span>
+                                        </div>
+                                        <div class="feedbackCon">
+                                            ${comment}
+                                        </div>
+                                    </li>
+                                    `
+                        $(".list-group").append(curr_comment)
+                        parentId = null
+                    } else {
+                        $("#comment_error").text(res.msg)
+                    }
+                    //将评论框内容情况
+                    editor.html("")
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+
+            })
+        })
+
+        // 回复
+        $(".reply").click(function () {
+            let replyuser = $(this).attr("replyuser");
+            parentId = $(this).attr("replyId");
+            $("#comment").val("@" + replyuser + "\n").focus()
+        })
 
     </script>
 {% endblock %}

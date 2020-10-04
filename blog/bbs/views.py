@@ -1,6 +1,7 @@
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
+from django.db import transaction
+from django.db.models import Count, F
 from django.db.models.functions import TruncMonth
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
@@ -205,7 +206,7 @@ def usersite(request, username, **kwargs):
 
 
 # 文章详情
-def articledetail(request, username, artileid):
+def articledetail(request, username, articleid):
     '''
     文章详情
     :param request:
@@ -214,5 +215,65 @@ def articledetail(request, username, artileid):
     :return:
     '''
     user = models.User.objects.filter(username=username).first()
-    article = models.Article.objects.filter(pk=artileid, site__user__username=username).first()
+    article = models.Article.objects.filter(pk=articleid, site__user__username=username).first()
+    comments = models.Comment.objects.filter(article=article).all()
     return render(request,'bbs/article_detail.html',locals())
+
+# 文章点赞点踩
+import json
+def up_down(request):
+    '''
+    1、必须为登录用户
+    2、不能点赞自己的文章
+    3、点赞点踩二选一,且不能重复操作
+    :param request:
+    :return:
+    '''
+    res = {'code':200,'msg':'success'}
+    is_authenticated = request.user.is_authenticated
+    if not is_authenticated:
+        login_url = reverse('bbs:login')
+        res['code']=403
+        res['msg']='请先<a href="'+login_url+'">登录</a>'
+    else:
+        articleId = request.POST.get('artileId')
+        article = models.Article.objects.filter(pk=articleId).first()
+        if article.site.user == request.user:
+            res['code'] = 201
+            res['msg'] = '不能点赞点踩自己的文档'
+        else:
+            actions = models.Updown.objects.filter(user=request.user, article=article).all()
+            if actions:
+                res['code'] = 202
+                res['msg'] = '您已经操作过这片文章了'
+            else:
+                is_up = request.POST.get('is_up')
+                is_up = json.loads(is_up)
+                with transaction.atomic():
+                    models.Updown.objects.create(user=request.user, article=article, is_up=is_up)
+                    if is_up:
+                        models.Article.objects.filter(pk=articleId).update(up_num=F('up_num') + 1)
+                    else:
+                        models.Article.objects.filter(pk=articleId).update(down_num=F('down_num') + 1)
+    return JsonResponse(res)
+
+# 添加评论
+def comment(request):
+    if request.is_ajax() and request.method == 'POST':
+        res={'code':200,'msg':'success'}
+        if request.user.is_authenticated:
+            articleId = request.POST.get('articleId')
+            comment = request.POST.get('comment')
+            parentId = request.POST.get('parentId')
+            #评论表  评论数
+            with transaction.atomic():
+                models.Comment.objects.create(user=request.user,article_id=articleId,content=comment,parent_id=parentId)
+                models.Article.objects.filter(pk=articleId).update(comment_num=F('comment_num')+1)
+        else:
+            res['code']:403
+            res['msg']:'请先登录'
+        return JsonResponse(res)
+
+
+
+

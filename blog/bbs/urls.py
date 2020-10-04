@@ -21,6 +21,10 @@ urlpatterns = [
     path('logout', views.logout, name='logout'),
     # 修改密码
     path('changepassword', views.changepassword, name='changepassword'),
+    # 点赞点踩
+    path('up_down',views.up_down,name='up_down'),
+    # 评论
+    path('comment',views.comment,name='comment'),
     # 站点首页
     re_path('^(?P<username>\w+)/$', views.usersite, name='usersite'),
     ###侧边栏筛选功能
@@ -33,6 +37,6 @@ urlpatterns = [
     # 站点综合
     re_path('^(?P<username>\w+)/(?P<condition>label|category|archive)/(?P<param>.*)/', views.usersite,name='sitebycondition'),
     # 文章详情
-    re_path('^(?P<username>\w+)/article/(?P<artileid>\d+)/',views.articledetail,name='articledetail'),
+    re_path('^(?P<username>\w+)/article/(?P<articleid>\d+)/',views.articledetail,name='articledetail'),
 
 ]
