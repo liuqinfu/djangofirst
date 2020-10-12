@@ -310,7 +310,7 @@ def addarticle(request):
         for tag in tags:
             if tag.name == 'script':
                 tag.decompose()
-        desc = soup.text[0:150]
+        desc = soup.text[0:100]
         content=str(soup)
 
         with transaction.atomic():
