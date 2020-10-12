@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>后台管理</title>
     {% load static %}
     <!-- 使用bootstrap动画必须引入，动画依赖jquery -->
     <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
@@ -31,11 +31,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            {% if user %}
-                <a class="navbar-brand" href="{% url 'bbs:usersite' user.username %}">{{ user.site.name }}</a>
-            {% else %}
-                <a class="navbar-brand">BBS</a>
-            {% endif %}
+            <a class="navbar-brand"
+               href="{% url 'bbs:usersite' request.user.username %}">{{ request.user.site.name }}</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -76,7 +73,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="#" data-toggle="modal" data-target="#changepassword">修改密码</a></li>
                             <li><a href="#">修改头像</a></li>
-                            <li><a href="{% url 'bbs:backend' %}">后台管理</a></li>
+                            <li><a href="#">后台管理</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="{% url 'bbs:logout' %}">退出登录</a></li>
                         </ul>
@@ -128,13 +125,56 @@
 </nav>
 <div class="container-fluid">
     <div class="col-md-2">
-        {% load myTag %}
-        {% sidecontent username %}
+        <div class="panel-group" role="tablist">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="collapseListGroupHeading1">
+                    <h4 class="panel-title">
+                        <label class="collapsed" role="button" data-toggle="collapse" href="#collapseListGroup1"
+                           aria-expanded="true" aria-controls="collapseListGroup1">
+                            更多操作 <span class="glyphicon glyphicon-menu-down"></span>
+                        </label>
+                    </h4>
+                </div>
+                <div id="collapseListGroup1" class="panel-collapse collapse in" role="tabpanel"
+                     aria-labelledby="collapseListGroupHeading1" aria-expanded="false" style="height: 0px;">
+                    <ul class="list-group">
+                        <li class="list-group-item"><a href="{% url 'bbs:addarticle' %}">添加文章</a></li>
+                        <li class="list-group-item">添加随笔</li>
+                        <li class="list-group-item">其他</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-md-10">
-        {% block articles %}
+        <div>
 
-        {% endblock %}
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#article" aria-controls="article" role="tab"
+                                                          data-toggle="tab"><span class="glyphicon glyphicon-list">&nbsp;</span>文章管理</a></li>
+                <li role="presentation"><a href="#mark" aria-controls="mark" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-pencil">&nbsp;</span>随笔</a>
+                </li>
+                <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-cog">&nbsp;</span>Settings</a>
+                </li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="article">
+                    {% block article %}
+                    {% endblock %}
+                </div>
+                <div role="tabpanel" class="tab-pane" id="mark">
+                    {% block marks %}
+                    {% endblock %}
+                </div>
+                <div role="tabpanel" class="tab-pane" id="settings">
+                    {% block settings %}
+                    {% endblock %}
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 {% block boot_js %}

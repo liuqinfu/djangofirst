@@ -217,10 +217,13 @@ def articledetail(request, username, articleid):
     user = models.User.objects.filter(username=username).first()
     article = models.Article.objects.filter(pk=articleid, site__user__username=username).first()
     comments = models.Comment.objects.filter(article=article).all()
-    return render(request,'bbs/article_detail.html',locals())
+    return render(request, 'bbs/article_detail.html', locals())
+
 
 # 文章点赞点踩
 import json
+
+
 def up_down(request):
     '''
     1、必须为登录用户
@@ -229,12 +232,12 @@ def up_down(request):
     :param request:
     :return:
     '''
-    res = {'code':200,'msg':'success'}
+    res = {'code': 200, 'msg': 'success'}
     is_authenticated = request.user.is_authenticated
     if not is_authenticated:
         login_url = reverse('bbs:login')
-        res['code']=403
-        res['msg']='请先<a href="'+login_url+'">登录</a>'
+        res['code'] = 403
+        res['msg'] = '请先<a href="' + login_url + '">登录</a>'
     else:
         articleId = request.POST.get('artileId')
         article = models.Article.objects.filter(pk=articleId).first()
@@ -257,23 +260,69 @@ def up_down(request):
                         models.Article.objects.filter(pk=articleId).update(down_num=F('down_num') + 1)
     return JsonResponse(res)
 
+
 # 添加评论
 def comment(request):
     if request.is_ajax() and request.method == 'POST':
-        res={'code':200,'msg':'success'}
+        res = {'code': 200, 'msg': 'success'}
         if request.user.is_authenticated:
             articleId = request.POST.get('articleId')
             comment = request.POST.get('comment')
             parentId = request.POST.get('parentId')
-            #评论表  评论数
+            soup = BeautifulSoup(comment, 'html.parser')
+            tags = soup.findAll()
+            for tag in tags:
+                if tag.name == 'script':
+                    tag.decompose()
+            comment=str(soup)
+            # 评论表  评论数
             with transaction.atomic():
-                models.Comment.objects.create(user=request.user,article_id=articleId,content=comment,parent_id=parentId)
-                models.Article.objects.filter(pk=articleId).update(comment_num=F('comment_num')+1)
+                models.Comment.objects.create(user=request.user, article_id=articleId, content=comment,
+                                              parent_id=parentId)
+                models.Article.objects.filter(pk=articleId).update(comment_num=F('comment_num') + 1)
+            res['comment']=comment
         else:
-            res['code']:403
-            res['msg']:'请先登录'
+            res['code']: 403
+            res['msg']: '请先登录'
         return JsonResponse(res)
 
 
+@login_required
+def backend(request):
+    article_list = models.Article.objects.filter(site__user=request.user)
+    current_page = request.GET.get("page", 1)
+    all_count = article_list.count()
+    page_obj = pagehelper.Pagination(current_page=current_page, all_count=all_count, per_page_num=10)
+    page_queryset = article_list[page_obj.start:page_obj.end]
+    return render(request, 'bbs/backend/article_manage.html', locals())
 
 
+from bs4 import BeautifulSoup
+@login_required
+def addarticle(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        category_id = request.POST.get('category')
+        labels = request.POST.getlist('label')
+        soup = BeautifulSoup(content, 'html.parser')
+        tags = soup.findAll()
+        for tag in tags:
+            if tag.name == 'script':
+                tag.decompose()
+        desc = soup.text[0:150]
+        content=str(soup)
+
+        with transaction.atomic():
+            article_obj = models.Article.objects.create(title=title, content=content, desc=desc, category_id=category_id,
+                                                   site=request.user.site)
+            label_obj_list=[]
+            for label_id in labels:
+                label_obj = models.Article2Label(article=article_obj, label_id=label_id)
+                label_obj_list.append(label_obj)
+            models.Article2Label.objects.bulk_create(label_obj_list)
+        return redirect(to=reverse('bbs:backend'))
+
+    category_list = models.Category.objects.filter(site__user=request.user).all()
+    label_list = models.Label.objects.filter(site__user=request.user).all()
+    return render(request, 'bbs/backend/article_add.html', locals())

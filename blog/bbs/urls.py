@@ -9,6 +9,8 @@ from blog import settings
 urlpatterns = [
     # 暴露后端指定文件夹资源
     re_path('^media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT}),
+    path('backend',views.backend,name='backend'),
+    path('backend/addarticle',views.addarticle,name='addarticle'),
     # 首页
     re_path('^$', views.home, name='home'),
     # 获取验证码

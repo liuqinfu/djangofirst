@@ -1,0 +1,28 @@
+{% extends 'bbs/backend/base.html' %}
+{% block article %}
+    <table class="table table-striped table-hover table-condensed">
+        <thead>
+        <tr>
+            <th>主题</th>
+            <th>评论数</th>
+            <th>点赞数</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for article in page_queryset %}
+            <tr>
+                <td><a href="{% url 'bbs:articledetail' request.user.username article.pk %}">{{ article.title }}</a>
+                </td>
+                <td>{{ article.comment_num }}</td>
+                <td>{{ article.up_num }}</td>
+                <td>
+                    <a href="" type="button" class="btn btn-primary">编辑</a>
+                    <a id="" type="button" class="btn btn-danger delete">删除</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div name="page" class="pull-right">{{ page_obj.page_html|safe }}</div>
+{% endblock %}

@@ -185,7 +185,11 @@
     <script>
         //初始化富文本编辑器
         KindEditor.ready(function (K) {
-            window.editor = K.create('#comment');
+            window.editor = K.create('#comment', {
+                width: '100%',
+                height:'100px',
+                resizeType:1
+            });
         })
         //点赞点踩
         $(".action").click(function () {
@@ -226,8 +230,9 @@
         let parentId = null
         //文章评论
         $("#id_comment").click(function () {
-            editor.sync();
-            let comment = $("#comment").val();
+            {#editor.sync();#}
+            {#let comment = $("#comment").val();#}
+            let comment = editor.html();
             if (parentId != null) {
                 let comment_index = comment.indexOf("\n") + 1;
                 comment = comment.slice(comment_index);
@@ -242,6 +247,7 @@
                 },
                 success: function (res) {
                     if (res.code == 200) {
+                        comment = res.comment
                         curr_comment = `
                                     <li class="list-group-item">
                                         <div class="feedbackListSubtitle">
