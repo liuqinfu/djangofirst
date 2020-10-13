@@ -251,7 +251,7 @@
                         curr_comment = `
                                     <li class="list-group-item">
                                         <div class="feedbackListSubtitle">
-                                            <span><a>{{ request.user.username }}</a></span>
+                                            <span><a href="{% url 'bbs:usersite' request.user.username %}" >{{ request.user.username }}</a></span>
                                         </div>
                                         <div class="feedbackCon">
                                             ${comment}
