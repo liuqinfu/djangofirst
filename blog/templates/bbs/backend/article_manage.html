@@ -18,11 +18,54 @@
                 <td>{{ article.up_num }}</td>
                 <td>
                     <a href="" type="button" class="btn btn-primary">编辑</a>
-                    <a id="" type="button" class="btn btn-danger delete">删除</a>
+                    <a id="{{ article.pk }}" type="button" class="btn btn-danger delete">删除</a>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     <div name="page" class="pull-right">{{ page_obj.page_html|safe }}</div>
+{% endblock %}
+
+{% block foot_js %}
+    <script>
+        $(".delete").click(function () {
+            let articleId = this.id
+            swal("", "删除后无法撤销，确认删除吗?", "warning", {
+                buttons: {
+                    cancel: "取消",
+                    catch: {
+                        text: "确认删除",
+                        value: "confirm",
+                    },
+                },
+            }).then((value) => {
+                switch (value) {
+                    case "confirm":
+                        console.log(articleId)
+                        swal("已删除!", "数据删除成功!", "success", {
+                            buttons: {
+                                catch: {
+                                    text: "OK",
+                                    value: "confirm",
+                                },
+                            },
+                        }).then(value1 => {
+                            switch (value1) {
+                                case 'confirm':
+                                    location.reload() {% comment %}刷新数据{% endcomment %}
+                            }
+                        })
+                        break;
+                    default:
+                        swal({
+                            {#title: "已取消",#}
+                            text: "已取消",
+                            icon: "info",
+                            button: false,
+                        });
+                }
+            });
+        })
+    </script>
 {% endblock %}
