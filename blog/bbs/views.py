@@ -294,6 +294,7 @@ def backend(request):
     all_count = article_list.count()
     page_obj = pagehelper.Pagination(current_page=current_page, all_count=all_count, per_page_num=10)
     page_queryset = article_list[page_obj.start:page_obj.end]
+    showArticle = True
     return render(request, 'bbs/backend/article_manage.html', locals())
 
 
@@ -325,4 +326,19 @@ def addarticle(request):
 
     category_list = models.Category.objects.filter(site__user=request.user).all()
     label_list = models.Label.objects.filter(site__user=request.user).all()
+
+    showArticle = True
     return render(request, 'bbs/backend/article_add.html', locals())
+
+@login_required
+def settings(request):
+    showSettings = True
+    if request.method == 'POST':
+        siteTitle = request.POST.get('site_title')
+        avatar = request.FILES.get('avatar')
+        user = models.User.objects.filter(pk=request.user.pk).first()
+        user.site.title = siteTitle
+        if avatar:user.avatar = avatar
+        user.save()
+        return redirect(to='bbs:settings')
+    return render(request, 'bbs/backend/settings.html', locals())

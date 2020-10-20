@@ -27,6 +27,8 @@ urlpatterns = [
     path('up_down',views.up_down,name='up_down'),
     # 评论
     path('comment',views.comment,name='comment'),
+    # 设置
+    path('settings',views.settings,name='settings'),
     # 站点首页
     re_path('^(?P<username>\w+)/$', views.usersite, name='usersite'),
     ###侧边栏筛选功能

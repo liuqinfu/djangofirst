@@ -75,7 +75,7 @@
                            aria-expanded="false">更多<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#" data-toggle="modal" data-target="#changepassword">修改密码</a></li>
-                            <li><a href="#">修改头像</a></li>
+                            <li><a href="{% url 'bbs:settings' %}">修改头像</a></li>
                             <li><a href="{% url 'bbs:backend' %}">后台管理</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="{% url 'bbs:logout' %}">退出登录</a></li>
