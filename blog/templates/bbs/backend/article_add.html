@@ -39,7 +39,11 @@
             window.editor = K.create('#content', {
                 width: '100%',
                 height:'500px',
-                resizeType:1
+                resizeType:1,
+                uploadJson : '/bbs/upload',
+                extraFileUploadParams : {
+                        'csrfmiddlewaretoken':'{{ csrf_token }}'
+                }
             });
         })
 

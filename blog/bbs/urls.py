@@ -29,6 +29,8 @@ urlpatterns = [
     path('comment',views.comment,name='comment'),
     # 设置
     path('settings',views.settings,name='settings'),
+    # 上传单张图片
+    path('upload',views.upload,name='uploadImg'),
     # 站点首页
     re_path('^(?P<username>\w+)/$', views.usersite, name='usersite'),
     ###侧边栏筛选功能

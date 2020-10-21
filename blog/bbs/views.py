@@ -342,3 +342,14 @@ def settings(request):
         user.save()
         return redirect(to='bbs:settings')
     return render(request, 'bbs/backend/settings.html', locals())
+
+def upload(request):
+    res={'error':1}
+    if request.method == 'POST':
+        print(request.FILES)
+        res['error']=0
+        # res['url']='../media/avator/a.jpeg'
+        res['url']='http://localhost:8000/bbs/media/avatar/a.jpeg'
+    response = JsonResponse(res)
+    response.__setitem__('X-Frame-Options','SAMEORIGIN')
+    return response
