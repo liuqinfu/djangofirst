@@ -274,13 +274,13 @@ def comment(request):
             for tag in tags:
                 if tag.name == 'script':
                     tag.decompose()
-            comment=str(soup)
+            comment = str(soup)
             # 评论表  评论数
             with transaction.atomic():
                 models.Comment.objects.create(user=request.user, article_id=articleId, content=comment,
                                               parent_id=parentId)
                 models.Article.objects.filter(pk=articleId).update(comment_num=F('comment_num') + 1)
-            res['comment']=comment
+            res['comment'] = comment
         else:
             res['code']: 403
             res['msg']: '请先登录'
@@ -299,6 +299,8 @@ def backend(request):
 
 
 from bs4 import BeautifulSoup
+
+
 @login_required
 def addarticle(request):
     if request.method == 'POST':
@@ -312,12 +314,13 @@ def addarticle(request):
             if tag.name == 'script':
                 tag.decompose()
         desc = soup.text[0:100]
-        content=str(soup)
+        content = str(soup)
 
         with transaction.atomic():
-            article_obj = models.Article.objects.create(title=title, content=content, desc=desc, category_id=category_id,
-                                                   site=request.user.site)
-            label_obj_list=[]
+            article_obj = models.Article.objects.create(title=title, content=content, desc=desc,
+                                                        category_id=category_id,
+                                                        site=request.user.site)
+            label_obj_list = []
             for label_id in labels:
                 label_obj = models.Article2Label(article=article_obj, label_id=label_id)
                 label_obj_list.append(label_obj)
@@ -330,6 +333,7 @@ def addarticle(request):
     showArticle = True
     return render(request, 'bbs/backend/article_add.html', locals())
 
+
 @login_required
 def settings(request):
     showSettings = True
@@ -338,18 +342,28 @@ def settings(request):
         avatar = request.FILES.get('avatar')
         user = models.User.objects.filter(pk=request.user.pk).first()
         user.site.title = siteTitle
-        if avatar:user.avatar = avatar
+        if avatar: user.avatar = avatar
         user.save()
         return redirect(to='bbs:settings')
     return render(request, 'bbs/backend/settings.html', locals())
 
+
+from blog.settings import BASE_DIR
+import os
+
+
 def upload(request):
-    res={'error':1}
+    res = {'error': 1}
     if request.method == 'POST':
-        print(request.FILES)
-        res['error']=0
-        # res['url']='../media/avator/a.jpeg'
-        res['url']='http://localhost:8000/bbs/media/avatar/a.jpeg'
+        imgFile = request.FILES.get('imgFile')
+        upload_img_path = os.path.join(BASE_DIR, 'media', 'upload', 'imgs')
+        if not os.path.exists(upload_img_path):
+            os.makedirs(upload_img_path)
+        with open(os.path.join(upload_img_path, imgFile.name), 'wb') as f:
+            for line in imgFile:
+                f.write(line)
+        res['error'] = 0
+        res['url'] = '/bbs/media/upload/imgs/%s' % imgFile.name
     response = JsonResponse(res)
-    response.__setitem__('X-Frame-Options','SAMEORIGIN')
+    response.__setitem__('X-Frame-Options', 'SAMEORIGIN')
     return response
