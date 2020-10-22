@@ -45,6 +45,7 @@ urlpatterns = [
     path('app01/',include(('app01.urls','app01'),namespace='app01')),
     path('app02/',include(('app02.urls','app02'),namespace='app02')),
     path('book/',include(('bookmanage.urls','bookmanage'),namespace='book')),
+    path('drf/',include(('drf.urls','drf'),namespace='drf')),
 
     path('tag/',include((tagurls,'tag'),namespace='mytag')),
 ]

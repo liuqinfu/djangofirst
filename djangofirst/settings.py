@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'app02.apps.App02Config',
     'bookmanage.apps.BookmanageConfig',
     'tag.apps.TagConfig',
+    'drf.apps.DrfConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
